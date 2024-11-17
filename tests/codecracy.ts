@@ -119,6 +119,7 @@ describe("codecracy", () => {
 
   it("Change admin", async () => {
     const newAdmin = anchor.web3.Keypair.generate();
+    await airdropSol(provider.connection, newAdmin.publicKey);
 
     await program.methods
       .changeAdmin()
@@ -127,6 +128,18 @@ describe("codecracy", () => {
         admin: admin.publicKey,
         newAdmin: newAdmin.publicKey,
       })
+      .rpc();
+
+    // Another admin change
+    const newAdmin2 = anchor.web3.Keypair.generate();
+    await program.methods
+      .changeAdmin()
+      .accountsStrict({
+        projectConfig,
+        admin: newAdmin.publicKey,
+        newAdmin: newAdmin2.publicKey,
+      })
+      .signers([newAdmin])
       .rpc();
   });
 

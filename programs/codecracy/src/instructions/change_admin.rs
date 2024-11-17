@@ -11,6 +11,7 @@ pub struct AdminChange<'info> {
     pub new_admin: UncheckedAccount<'info>,
 
     #[account(
+        mut,
         has_one = admin
     )]
     pub project_config: Account<'info, ProjectConfig>,
