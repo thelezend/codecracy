@@ -7,4 +7,10 @@ pub enum ProjectInitializationError {
 
     #[msg("Length of the github handle must be between 1 and 32 characters")]
     InvalidGithubHandle,
+
+    #[msg("Invalid address lookup table account")]
+    InvalidAddressLookupTable,
+
+    #[msg("Invalid address lookup table program")]
+    InvalidAddressLookupTableProgram,
 }

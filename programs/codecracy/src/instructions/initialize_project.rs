@@ -1,8 +1,13 @@
+use std::str::FromStr;
+
 use crate::{
-    error::ProjectInitializationError, Project, MAX_GITHUB_HANDLE_LENGTH, MAX_PROJECT_NAME_LENGTH,
-    PROJECT_CONFIG_SEED, VAULT_SEED,
+    error::ProjectInitializationError, Project, ADDRESS_LOOK_UP_TABLE_PROGRAM,
+    MAX_GITHUB_HANDLE_LENGTH, MAX_PROJECT_NAME_LENGTH, PROJECT_CONFIG_SEED, VAULT_SEED,
 };
-use anchor_lang::prelude::*;
+use anchor_lang::{
+    prelude::*,
+    solana_program::{address_lookup_table::instruction::create_lookup_table, program::invoke},
+};
 
 /// Accounts and data required for initializing a new project
 #[derive(Accounts)]
@@ -25,18 +30,28 @@ pub struct InitializeProject<'info> {
         ],
         bump
     )]
-    pub project_config: Account<'info, Project>,
+    pub project: Account<'info, Project>,
 
     /// Project vault that will hold the project's funds
     /// This PDA is derived from the project_config PDA
     #[account(
         seeds = [
             VAULT_SEED.as_bytes(),
-            project_config.key().as_ref()
+            project.key().as_ref()
         ],
         bump,
     )]
     pub vault: SystemAccount<'info>,
+
+    /// CHECK: Verified in the instruction
+    #[account(mut)]
+    pub lookup_table: UncheckedAccount<'info>,
+
+    /// CHECK: No Lookup table program found in anchor, checking manually
+    #[account(
+        constraint = atl_program.key() == Pubkey::from_str(ADDRESS_LOOK_UP_TABLE_PROGRAM).unwrap() @ ProjectInitializationError::InvalidAddressLookupTableProgram
+    )]
+    pub atl_program: UncheckedAccount<'info>,
 
     /// Required system program
     pub system_program: Program<'info, System>,
@@ -61,13 +76,36 @@ impl<'info> InitializeProject<'info> {
             ProjectInitializationError::InvalidGithubHandle
         );
 
-        self.project_config.set_inner(Project {
+        self.project.set_inner(Project {
             admin: self.admin.key(),
-            project_name,
-            github_handle,
-            bump: bumps.project_config,
+            project_name: project_name.clone(),
+            github_handle: github_handle.clone(),
+            bump: bumps.project,
             vault_bump: bumps.vault,
         });
+
+        Ok(())
+    }
+
+    pub fn create_lookup_table(&mut self, slot: u64) -> Result<()> {
+        // Create address lookup table instruction
+        let (atl_ix, atl_pubkey) = create_lookup_table(self.project.key(), self.admin.key(), slot);
+
+        // Require address lookup table to be present
+        require!(
+            self.lookup_table.key() == atl_pubkey,
+            ProjectInitializationError::InvalidAddressLookupTable
+        );
+
+        invoke(
+            &atl_ix,
+            &[
+                self.lookup_table.to_account_info(),
+                self.project.to_account_info(),
+                self.admin.to_account_info(),
+                self.system_program.to_account_info(),
+            ],
+        )?;
 
         Ok(())
     }

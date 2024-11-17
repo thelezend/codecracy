@@ -13,15 +13,18 @@ declare_id!("j8RWHX7RcLfWxkimpbgrSv6cPjUdpdGvjj3n3ikd53S");
 
 #[program]
 pub mod codecracy {
+
     use super::*;
 
     pub fn initialize_project(
         ctx: Context<InitializeProject>,
         project_name: String,
         github_handle: String,
+        slot: u64,
     ) -> Result<()> {
         ctx.accounts
-            .init_project(project_name, github_handle, &ctx.bumps)
+            .init_project(project_name, github_handle, &ctx.bumps)?;
+        ctx.accounts.create_lookup_table(slot)
     }
 
     pub fn change_admin(ctx: Context<AdminChange>) -> Result<()> {
