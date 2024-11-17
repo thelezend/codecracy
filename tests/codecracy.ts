@@ -23,7 +23,7 @@ describe("codecracy", () => {
       [
         Buffer.from(PROJECT_CONFIG_SEED),
         Buffer.from(projectName),
-        admin.publicKey.toBuffer(),
+        Buffer.from(githubHandle),
       ],
       program.programId
     );
@@ -53,7 +53,7 @@ describe("codecracy", () => {
       [
         Buffer.from(PROJECT_CONFIG_SEED),
         Buffer.from(projectName),
-        admin.publicKey.toBuffer(),
+        Buffer.from(githubHandle),
       ],
       program.programId
     );
@@ -79,15 +79,15 @@ describe("codecracy", () => {
       assert.strictEqual(err.error.errorCode.code, "InvalidProjectName");
     }
 
-    // Long Github handle
+    // Empty github handle
     projectName = "codecracy";
-    githubHandle = "a".repeat(33);
+    githubHandle = "";
 
     projectConfig = web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from(PROJECT_CONFIG_SEED),
         Buffer.from(projectName),
-        admin.publicKey.toBuffer(),
+        Buffer.from(githubHandle),
       ],
       program.programId
     )[0];

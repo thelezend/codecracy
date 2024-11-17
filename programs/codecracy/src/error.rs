@@ -2,9 +2,9 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ProjectInitializationError {
-    #[msg(format!("Length of the project name must be between 1 and {} characters", MAX_PROJECT_NAME_LENGTH))]
+    #[msg("Length of the project name must be between 1 and 32 characters")]
     InvalidProjectName,
 
-    #[msg(format!("Length of the github handle must be between 1 and {} characters", MAX_GITHUB_HANDLE_LENGTH))]
+    #[msg("Length of the github handle must be between 1 and 32 characters")]
     InvalidGithubHandle,
 }

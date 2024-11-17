@@ -6,14 +6,14 @@ use anchor_lang::prelude::*;
 
 /// Accounts and data required for initializing a new project
 #[derive(Accounts)]
-#[instruction(project_name: String)]
+#[instruction(project_name: String, github_handle: String)]
 pub struct InitializeProject<'info> {
     /// The creator/admin of the project who will pay for initialization
     #[account(mut)]
     pub admin: Signer<'info>,
 
     /// Project configuration account that stores project details
-    /// This PDA is derived from the project name and admin's public key
+    /// This PDA is derived from the project name and Github handle
     #[account(
         init,
         payer = admin,
@@ -21,7 +21,7 @@ pub struct InitializeProject<'info> {
         seeds = [
             PROJECT_CONFIG_SEED.as_bytes(),
             project_name.as_bytes(),
-            admin.key().as_ref(),
+            github_handle.as_bytes(),
         ],
         bump
     )]
