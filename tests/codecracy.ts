@@ -51,126 +51,136 @@ describe("codecracy", () => {
         vault,
         systemProgram: web3.SystemProgram.programId,
         lookupTable,
-        lookupTableProgram: web3.AddressLookupTableProgram.programId,
+        atlProgram: web3.AddressLookupTableProgram.programId,
       })
       .rpc({ skipPreflight: true });
   });
 
-  // it("Fail on invalid project initialization", async () => {
-  //   // Empty project name
-  //   let projectName = "";
-  //   let githubHandle = "a";
+  it("Fail on invalid project initialization", async () => {
+    // Empty project name
+    let projectName = "";
+    let githubHandle = "a";
 
-  //   let [project] = web3.PublicKey.findProgramAddressSync(
-  //     [
-  //       Buffer.from(PROJECT_CONFIG_SEED),
-  //       Buffer.from(projectName),
-  //       Buffer.from(githubHandle),
-  //     ],
-  //     program.programId
-  //   );
+    let [project] = web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from(PROJECT_CONFIG_SEED),
+        Buffer.from(projectName),
+        Buffer.from(githubHandle),
+      ],
+      program.programId
+    );
 
-  //   let [vault] = web3.PublicKey.findProgramAddressSync(
-  //     [Buffer.from(VAULT_SEED), project.toBuffer()],
-  //     program.programId
-  //   );
+    let [vault] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), project.toBuffer()],
+      program.programId
+    );
 
-  //   try {
-  //     await program.methods
-  //       .initializeProject(projectName, githubHandle)
-  //       .accountsStrict({
-  //         projectConfig: project,
-  //         admin: admin.publicKey,
-  //         vault,
-  //         systemProgram: web3.SystemProgram.programId,
-  //       })
-  //       .rpc();
-  //     assert.fail();
-  //   } catch (_err) {
-  //     const err = anchor.AnchorError.parse(_err.logs);
-  //     assert.strictEqual(err.error.errorCode.code, "InvalidProjectName");
-  //   }
+    let recent_slot = new anchor.BN(await provider.connection.getSlot());
+    lookupTable = web3.PublicKey.findProgramAddressSync(
+      [project.toBuffer(), recent_slot.toArrayLike(Buffer, "le", 8)],
+      anchor.web3.AddressLookupTableProgram.programId
+    )[0];
 
-  //   // Empty github handle
-  //   projectName = "codecracy";
-  //   githubHandle = "";
+    try {
+      await program.methods
+        .initializeProject(projectName, githubHandle, recent_slot)
+        .accountsStrict({
+          project,
+          admin: admin.publicKey,
+          vault,
+          systemProgram: web3.SystemProgram.programId,
+          lookupTable,
+          atlProgram: web3.AddressLookupTableProgram.programId,
+        })
+        .rpc();
+      assert.fail();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "InvalidProjectName");
+    }
 
-  //   project = web3.PublicKey.findProgramAddressSync(
-  //     [
-  //       Buffer.from(PROJECT_CONFIG_SEED),
-  //       Buffer.from(projectName),
-  //       Buffer.from(githubHandle),
-  //     ],
-  //     program.programId
-  //   )[0];
+    // Empty github handle
+    projectName = "codecracy";
+    githubHandle = "";
 
-  //   vault = web3.PublicKey.findProgramAddressSync(
-  //     [Buffer.from(VAULT_SEED), project.toBuffer()],
-  //     program.programId
-  //   )[0];
+    project = web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from(PROJECT_CONFIG_SEED),
+        Buffer.from(projectName),
+        Buffer.from(githubHandle),
+      ],
+      program.programId
+    )[0];
 
-  //   try {
-  //     await program.methods
-  //       .initializeProject(projectName, githubHandle)
-  //       .accountsStrict({
-  //         projectConfig: project,
-  //         admin: admin.publicKey,
-  //         vault,
-  //         systemProgram: web3.SystemProgram.programId,
-  //       })
-  //       .rpc();
-  //     assert.fail();
-  //   } catch (_err) {
-  //     const err = anchor.AnchorError.parse(_err.logs);
-  //     assert.strictEqual(err.error.errorCode.code, "InvalidGithubHandle");
-  //   }
-  // });
+    vault = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), project.toBuffer()],
+      program.programId
+    )[0];
 
-  // it("Change admin", async () => {
-  //   const newAdmin = anchor.web3.Keypair.generate();
-  //   await airdropSol(provider.connection, newAdmin.publicKey);
+    try {
+      await program.methods
+        .initializeProject(projectName, githubHandle, recent_slot)
+        .accountsStrict({
+          project,
+          admin: admin.publicKey,
+          vault,
+          systemProgram: web3.SystemProgram.programId,
+          lookupTable,
+          atlProgram: web3.AddressLookupTableProgram.programId,
+        })
+        .rpc();
+      assert.fail();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "InvalidGithubHandle");
+    }
+  });
 
-  //   await program.methods
-  //     .changeAdmin()
-  //     .accountsStrict({
-  //       projectConfig: project,
-  //       admin: admin.publicKey,
-  //       newAdmin: newAdmin.publicKey,
-  //     })
-  //     .rpc();
+  it("Change admin", async () => {
+    const newAdmin = anchor.web3.Keypair.generate();
+    await airdropSol(provider.connection, newAdmin.publicKey);
 
-  //   // Another admin change
-  //   const newAdmin2 = anchor.web3.Keypair.generate();
-  //   await program.methods
-  //     .changeAdmin()
-  //     .accountsStrict({
-  //       projectConfig: project,
-  //       admin: newAdmin.publicKey,
-  //       newAdmin: newAdmin2.publicKey,
-  //     })
-  //     .signers([newAdmin])
-  //     .rpc();
-  // });
+    await program.methods
+      .changeAdmin()
+      .accountsStrict({
+        projectConfig: project,
+        admin: admin.publicKey,
+        newAdmin: newAdmin.publicKey,
+      })
+      .rpc();
 
-  // it("Fail on invalid admin change", async () => {
-  //   await airdropSol(provider.connection, hacker.publicKey);
+    // Another admin change
+    const newAdmin2 = anchor.web3.Keypair.generate();
+    await program.methods
+      .changeAdmin()
+      .accountsStrict({
+        projectConfig: project,
+        admin: newAdmin.publicKey,
+        newAdmin: newAdmin2.publicKey,
+      })
+      .signers([newAdmin])
+      .rpc();
+  });
 
-  //   try {
-  //     await program.methods
-  //       .changeAdmin()
-  //       .accountsStrict({
-  //         projectConfig: project,
-  //         admin: hacker.publicKey,
-  //         newAdmin: hacker.publicKey,
-  //       })
-  //       .signers([hacker])
-  //       .rpc();
-  //     assert.fail();
-  //   } catch (_err) {
-  //     const err = anchor.AnchorError.parse(_err.logs);
-  //     assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
-  //   }
-  // });
+  it("Fail on invalid admin change", async () => {
+    await airdropSol(provider.connection, hacker.publicKey);
+
+    try {
+      await program.methods
+        .changeAdmin()
+        .accountsStrict({
+          projectConfig: project,
+          admin: hacker.publicKey,
+          newAdmin: hacker.publicKey,
+        })
+        .signers([hacker])
+        .rpc();
+      assert.fail();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
+    }
+  });
 });
 
 async function airdropSol(
