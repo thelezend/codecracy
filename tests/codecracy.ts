@@ -21,7 +21,7 @@ describe("codecracy", () => {
   const projectName = "codeCracy";
   const githubHandle = "turbin3";
 
-  let [projectConfig] = web3.PublicKey.findProgramAddressSync(
+  let [project] = web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from(PROJECT_CONFIG_SEED),
       Buffer.from(projectName),
@@ -31,7 +31,7 @@ describe("codecracy", () => {
   );
 
   let [vault] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from(VAULT_SEED), projectConfig.toBuffer()],
+    [Buffer.from(VAULT_SEED), project.toBuffer()],
     program.programId
   );
 
@@ -39,7 +39,7 @@ describe("codecracy", () => {
     await program.methods
       .initializeProject(projectName, githubHandle)
       .accountsStrict({
-        projectConfig,
+        projectConfig: project,
         admin: admin.publicKey,
         vault,
         systemProgram: web3.SystemProgram.programId,
@@ -52,7 +52,7 @@ describe("codecracy", () => {
     let projectName = "";
     let githubHandle = "a";
 
-    let [projectConfig] = web3.PublicKey.findProgramAddressSync(
+    let [project] = web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from(PROJECT_CONFIG_SEED),
         Buffer.from(projectName),
@@ -62,7 +62,7 @@ describe("codecracy", () => {
     );
 
     let [vault] = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from(VAULT_SEED), projectConfig.toBuffer()],
+      [Buffer.from(VAULT_SEED), project.toBuffer()],
       program.programId
     );
 
@@ -70,7 +70,7 @@ describe("codecracy", () => {
       await program.methods
         .initializeProject(projectName, githubHandle)
         .accountsStrict({
-          projectConfig,
+          projectConfig: project,
           admin: admin.publicKey,
           vault,
           systemProgram: web3.SystemProgram.programId,
@@ -86,7 +86,7 @@ describe("codecracy", () => {
     projectName = "codecracy";
     githubHandle = "";
 
-    projectConfig = web3.PublicKey.findProgramAddressSync(
+    project = web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from(PROJECT_CONFIG_SEED),
         Buffer.from(projectName),
@@ -96,7 +96,7 @@ describe("codecracy", () => {
     )[0];
 
     vault = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from(VAULT_SEED), projectConfig.toBuffer()],
+      [Buffer.from(VAULT_SEED), project.toBuffer()],
       program.programId
     )[0];
 
@@ -104,7 +104,7 @@ describe("codecracy", () => {
       await program.methods
         .initializeProject(projectName, githubHandle)
         .accountsStrict({
-          projectConfig,
+          projectConfig: project,
           admin: admin.publicKey,
           vault,
           systemProgram: web3.SystemProgram.programId,
@@ -124,7 +124,7 @@ describe("codecracy", () => {
     await program.methods
       .changeAdmin()
       .accountsStrict({
-        projectConfig,
+        projectConfig: project,
         admin: admin.publicKey,
         newAdmin: newAdmin.publicKey,
       })
@@ -135,7 +135,7 @@ describe("codecracy", () => {
     await program.methods
       .changeAdmin()
       .accountsStrict({
-        projectConfig,
+        projectConfig: project,
         admin: newAdmin.publicKey,
         newAdmin: newAdmin2.publicKey,
       })
@@ -150,7 +150,7 @@ describe("codecracy", () => {
       await program.methods
         .changeAdmin()
         .accountsStrict({
-          projectConfig,
+          projectConfig: project,
           admin: hacker.publicKey,
           newAdmin: hacker.publicKey,
         })

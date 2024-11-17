@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::ProjectConfig;
+use crate::Project;
 
 #[derive(Accounts)]
 pub struct AdminChange<'info> {
@@ -14,7 +14,7 @@ pub struct AdminChange<'info> {
         mut,
         has_one = admin
     )]
-    pub project_config: Account<'info, ProjectConfig>,
+    pub project_config: Account<'info, Project>,
 }
 
 impl<'info> AdminChange<'info> {

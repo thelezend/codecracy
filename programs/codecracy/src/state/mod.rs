@@ -1,2 +1,2 @@
-pub mod project_config;
-pub use project_config::*;
+pub mod project;
+pub use project::*;

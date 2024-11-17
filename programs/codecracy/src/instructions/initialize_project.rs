@@ -1,6 +1,6 @@
 use crate::{
-    error::ProjectInitializationError, ProjectConfig, MAX_GITHUB_HANDLE_LENGTH,
-    MAX_PROJECT_NAME_LENGTH, PROJECT_CONFIG_SEED, VAULT_SEED,
+    error::ProjectInitializationError, Project, MAX_GITHUB_HANDLE_LENGTH, MAX_PROJECT_NAME_LENGTH,
+    PROJECT_CONFIG_SEED, VAULT_SEED,
 };
 use anchor_lang::prelude::*;
 
@@ -17,7 +17,7 @@ pub struct InitializeProject<'info> {
     #[account(
         init,
         payer = admin,
-        space = ProjectConfig::INIT_SPACE + 8,
+        space = Project::INIT_SPACE + 8,
         seeds = [
             PROJECT_CONFIG_SEED.as_bytes(),
             project_name.as_bytes(),
@@ -25,7 +25,7 @@ pub struct InitializeProject<'info> {
         ],
         bump
     )]
-    pub project_config: Account<'info, ProjectConfig>,
+    pub project_config: Account<'info, Project>,
 
     /// Project vault that will hold the project's funds
     /// This PDA is derived from the project_config PDA
@@ -61,7 +61,7 @@ impl<'info> InitializeProject<'info> {
             ProjectInitializationError::InvalidGithubHandle
         );
 
-        self.project_config.set_inner(ProjectConfig {
+        self.project_config.set_inner(Project {
             admin: self.admin.key(),
             project_name,
             github_handle,

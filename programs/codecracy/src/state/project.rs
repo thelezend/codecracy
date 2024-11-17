@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 
 #[account]
 #[derive(InitSpace)]
-pub struct ProjectConfig {
+pub struct Project {
     /// The public key of the project creator/admin
     pub admin: Pubkey,
 
