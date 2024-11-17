@@ -23,4 +23,8 @@ pub mod codecracy {
         ctx.accounts
             .init_project(project_name, github_handle, &ctx.bumps)
     }
+
+    pub fn change_admin(ctx: Context<AdminChange>) -> Result<()> {
+        ctx.accounts.change_admin()
+    }
 }
