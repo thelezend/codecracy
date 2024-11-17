@@ -141,13 +141,12 @@ describe("codecracy", () => {
           admin: hacker.publicKey,
           newAdmin: hacker.publicKey,
         })
+        .signers([hacker])
         .rpc();
       assert.fail();
-    } catch (err) {
-      assert(
-        err instanceof Error &&
-          err.message.includes("Signature verification failed")
-      );
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
     }
   });
 });
