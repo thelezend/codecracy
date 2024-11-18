@@ -39,9 +39,9 @@ pub struct AddMember<'info> {
     /// CHECK: No Lookup table found in anchor, checking manually
     #[account(
         mut,
-        constraint = lookup_table.key() == project.lookup_table.key() @ LookupTableError::InvalidAddressLookupTable
+        constraint = team_lut.key() == project.team_lut.key() @ LookupTableError::InvalidAddressLookupTable
     )]
-    pub lookup_table: UncheckedAccount<'info>,
+    pub team_lut: UncheckedAccount<'info>,
 
     /// CHECK: No Lookup table program found in anchor, checking manually
     #[account(
@@ -80,13 +80,13 @@ impl<'info> AddMember<'info> {
         let signer_seeds = &[&seeds[..]];
 
         let cpi_ix = extend_lookup_table(
-            self.lookup_table.key(),
+            self.team_lut.key(),
             self.project.key(),
             Some(self.admin.key()),
             vec![self.member_pubkey.key()],
         );
         let cpi_account_infos = [
-            self.lookup_table.to_account_info(),
+            self.team_lut.to_account_info(),
             self.project.to_account_info(),
             self.admin.to_account_info(),
             self.system_program.to_account_info(),

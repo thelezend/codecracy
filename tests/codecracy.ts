@@ -17,7 +17,7 @@ describe("codecracy", () => {
   const admin = provider.wallet as anchor.Wallet;
   const hacker = anchor.web3.Keypair.generate();
   const teamMember1 = anchor.web3.Keypair.generate();
-  let lookupTable: web3.PublicKey;
+  let teamLut: web3.PublicKey;
 
   const projectName = "codeCracy";
   const githubHandle = "turbin3";
@@ -38,7 +38,7 @@ describe("codecracy", () => {
 
   it("Valid project intialization", async () => {
     let recent_slot = new anchor.BN(await provider.connection.getSlot());
-    lookupTable = web3.PublicKey.findProgramAddressSync(
+    teamLut = web3.PublicKey.findProgramAddressSync(
       [project.toBuffer(), recent_slot.toArrayLike(Buffer, "le", 8)],
       anchor.web3.AddressLookupTableProgram.programId
     )[0];
@@ -50,7 +50,7 @@ describe("codecracy", () => {
         admin: admin.publicKey,
         vault,
         systemProgram: web3.SystemProgram.programId,
-        lookupTable,
+        lookupTable: teamLut,
         atlProgram: web3.AddressLookupTableProgram.programId,
       })
       .rpc({ skipPreflight: true });
@@ -61,7 +61,7 @@ describe("codecracy", () => {
     assert.strictEqual(projectData.githubHandle, githubHandle);
     assert.strictEqual(projectData.vaultBump, vaultBump);
     assert.strictEqual(projectData.bump, projectBump);
-    assert.isTrue(projectData.lookupTable.equals(lookupTable));
+    assert.isTrue(projectData.teamLut.equals(teamLut));
   });
 
   it("Fail on invalid project initialization", async () => {
@@ -133,7 +133,7 @@ describe("codecracy", () => {
           admin: admin.publicKey,
           vault,
           systemProgram: web3.SystemProgram.programId,
-          lookupTable,
+          lookupTable: teamLut,
           atlProgram: web3.AddressLookupTableProgram.programId,
         })
         .rpc();
@@ -160,7 +160,7 @@ describe("codecracy", () => {
         member,
         project,
         admin: admin.publicKey,
-        lookupTable,
+        teamLut,
         memberPubkey: teamMember1.publicKey,
         atlProgram: web3.AddressLookupTableProgram.programId,
         systemProgram: web3.SystemProgram.programId,
@@ -168,7 +168,7 @@ describe("codecracy", () => {
       .rpc();
 
     // Check if teamMember1's public key is present in the lookup table
-    const atl = await provider.connection.getAddressLookupTable(lookupTable);
+    const atl = await provider.connection.getAddressLookupTable(teamLut);
     const addresses = atl.value.state.addresses;
     const isTeamMember1Present = addresses.some((addr) =>
       addr.equals(teamMember1.publicKey)
@@ -194,7 +194,7 @@ describe("codecracy", () => {
           member: hackerMember,
           project,
           admin: hacker.publicKey,
-          lookupTable,
+          teamLut,
           memberPubkey: hacker.publicKey,
           atlProgram: web3.AddressLookupTableProgram.programId,
           systemProgram: web3.SystemProgram.programId,

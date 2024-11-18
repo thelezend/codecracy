@@ -110,7 +110,7 @@ impl<'info> InitializeProject<'info> {
         )?;
 
         // Set address lookup table
-        self.project.lookup_table = self.lookup_table.key();
+        self.project.team_lut = self.lookup_table.key();
 
         Ok(())
     }
