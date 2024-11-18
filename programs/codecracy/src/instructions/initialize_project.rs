@@ -1,8 +1,9 @@
 use std::str::FromStr;
 
 use crate::{
-    error::ProjectInitializationError, Project, ADDRESS_LOOK_UP_TABLE_PROGRAM,
-    MAX_GITHUB_HANDLE_LENGTH, MAX_PROJECT_NAME_LENGTH, PROJECT_CONFIG_SEED, VAULT_SEED,
+    error::{LookupTableError, ProjectInitializationError},
+    Project, ADDRESS_LOOK_UP_TABLE_PROGRAM, MAX_GITHUB_HANDLE_LENGTH, MAX_PROJECT_NAME_LENGTH,
+    PROJECT_CONFIG_SEED, VAULT_SEED,
 };
 use anchor_lang::{
     prelude::*,
@@ -49,7 +50,7 @@ pub struct InitializeProject<'info> {
 
     /// CHECK: No Lookup table program found in anchor, checking manually
     #[account(
-        constraint = atl_program.key() == Pubkey::from_str(ADDRESS_LOOK_UP_TABLE_PROGRAM).unwrap() @ ProjectInitializationError::InvalidAddressLookupTableProgram
+        constraint = atl_program.key() == Pubkey::from_str(ADDRESS_LOOK_UP_TABLE_PROGRAM).unwrap() @ LookupTableError::InvalidAddressLookupTableProgram
     )]
     pub atl_program: UncheckedAccount<'info>,
 
@@ -94,7 +95,7 @@ impl<'info> InitializeProject<'info> {
         // Require address lookup table to be present
         require!(
             self.lookup_table.key() == atl_pubkey,
-            ProjectInitializationError::InvalidAddressLookupTable
+            LookupTableError::InvalidAddressLookupTable
         );
 
         // Create address lookup table
@@ -109,7 +110,7 @@ impl<'info> InitializeProject<'info> {
         )?;
 
         // Set address lookup table
-        self.project.team_lut = atl_pubkey;
+        self.project.lookup_table = self.lookup_table.key();
 
         Ok(())
     }

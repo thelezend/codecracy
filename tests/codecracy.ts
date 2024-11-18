@@ -22,7 +22,7 @@ describe("codecracy", () => {
   const projectName = "codeCracy";
   const githubHandle = "turbin3";
 
-  let [project] = web3.PublicKey.findProgramAddressSync(
+  let [project, projectBump] = web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from(PROJECT_CONFIG_SEED),
       Buffer.from(projectName),
@@ -31,7 +31,7 @@ describe("codecracy", () => {
     program.programId
   );
 
-  let [vault] = web3.PublicKey.findProgramAddressSync(
+  let [vault, vaultBump] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from(VAULT_SEED), project.toBuffer()],
     program.programId
   );
@@ -54,6 +54,14 @@ describe("codecracy", () => {
         atlProgram: web3.AddressLookupTableProgram.programId,
       })
       .rpc({ skipPreflight: true });
+
+    let projectData = await program.account.project.fetch(project);
+    assert.isTrue(projectData.admin.equals(admin.publicKey));
+    assert.strictEqual(projectData.projectName, projectName);
+    assert.strictEqual(projectData.githubHandle, githubHandle);
+    assert.strictEqual(projectData.vaultBump, vaultBump);
+    assert.strictEqual(projectData.bump, projectBump);
+    assert.isTrue(projectData.lookupTable.equals(lookupTable));
   });
 
   it("Fail on invalid project initialization", async () => {
@@ -76,7 +84,7 @@ describe("codecracy", () => {
     );
 
     let recent_slot = new anchor.BN(await provider.connection.getSlot());
-    lookupTable = web3.PublicKey.findProgramAddressSync(
+    let invalidLookupTable = web3.PublicKey.findProgramAddressSync(
       [project.toBuffer(), recent_slot.toArrayLike(Buffer, "le", 8)],
       anchor.web3.AddressLookupTableProgram.programId
     )[0];
@@ -89,7 +97,7 @@ describe("codecracy", () => {
           admin: admin.publicKey,
           vault,
           systemProgram: web3.SystemProgram.programId,
-          lookupTable,
+          lookupTable: invalidLookupTable,
           atlProgram: web3.AddressLookupTableProgram.programId,
         })
         .rpc();
@@ -133,6 +141,69 @@ describe("codecracy", () => {
     } catch (_err) {
       const err = anchor.AnchorError.parse(_err.logs);
       assert.strictEqual(err.error.errorCode.code, "InvalidGithubHandle");
+    }
+  });
+
+  it("Valid member addition", async () => {
+    const [member] = web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("member"),
+        project.toBuffer(),
+        teamMember1.publicKey.toBuffer(),
+      ],
+      program.programId
+    );
+
+    await program.methods
+      .addMember("lezend", "thelezend")
+      .accountsStrict({
+        member,
+        project,
+        admin: admin.publicKey,
+        lookupTable,
+        memberPubkey: teamMember1.publicKey,
+        atlProgram: web3.AddressLookupTableProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    // Check if teamMember1's public key is present in the lookup table
+    const atl = await provider.connection.getAddressLookupTable(lookupTable);
+    const addresses = atl.value.state.addresses;
+    const isTeamMember1Present = addresses.some((addr) =>
+      addr.equals(teamMember1.publicKey)
+    );
+    assert.isTrue(
+      isTeamMember1Present,
+      "teamMember1's public key should be present in the lookup table"
+    );
+  });
+
+  it("Fail on invalid member addition", async () => {
+    await airdropSol(provider.connection, hacker.publicKey);
+
+    const [hackerMember] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("member"), project.toBuffer(), hacker.publicKey.toBuffer()],
+      program.programId
+    );
+
+    try {
+      await program.methods
+        .addMember("lezend", "thelezend")
+        .accountsStrict({
+          member: hackerMember,
+          project,
+          admin: hacker.publicKey,
+          lookupTable,
+          memberPubkey: hacker.publicKey,
+          atlProgram: web3.AddressLookupTableProgram.programId,
+          systemProgram: web3.SystemProgram.programId,
+        })
+        .signers([hacker])
+        .rpc();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
     }
   });
 

@@ -16,7 +16,7 @@ pub struct Project {
     pub github_handle: String,
 
     /// Lookup table for team members
-    pub team_lut: Pubkey,
+    pub lookup_table: Pubkey,
 
     /// PDA bump seed for account derivation
     pub bump: u8,
