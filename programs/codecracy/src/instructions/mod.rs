@@ -6,3 +6,6 @@ pub use change_admin::*;
 
 pub mod add_member;
 pub use add_member::*;
+
+pub mod remove_member;
+pub use remove_member::*;

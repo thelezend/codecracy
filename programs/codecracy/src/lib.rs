@@ -40,4 +40,8 @@ pub mod codecracy {
             .add_member(member_name, github_handle, &ctx.bumps)?;
         ctx.accounts.update_team_lut()
     }
+
+    pub fn remove_member(ctx: Context<RemoveMember>) -> Result<()> {
+        ctx.accounts.remove_member()
+    }
 }

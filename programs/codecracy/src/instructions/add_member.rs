@@ -11,7 +11,6 @@ use crate::{
     error::LookupTableError, Member, Project, ADDRESS_LOOK_UP_TABLE_PROGRAM, PROJECT_CONFIG_SEED,
 };
 
-/// Accounts and data required for initializing a new project
 #[derive(Accounts)]
 pub struct AddMember<'info> {
     #[account(mut)]

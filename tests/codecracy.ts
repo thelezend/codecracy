@@ -36,6 +36,15 @@ describe("codecracy", () => {
     program.programId
   );
 
+  const [member1, member1Bump] = web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("member"),
+      project.toBuffer(),
+      teamMember1.publicKey.toBuffer(),
+    ],
+    program.programId
+  );
+
   it("Valid project intialization", async () => {
     let recent_slot = new anchor.BN(await provider.connection.getSlot());
     teamLut = web3.PublicKey.findProgramAddressSync(
@@ -148,17 +157,11 @@ describe("codecracy", () => {
   });
 
   it("Valid member addition", async () => {
-    const [member1] = web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("member"),
-        project.toBuffer(),
-        teamMember1.publicKey.toBuffer(),
-      ],
-      program.programId
-    );
+    let member1Name = "lezend";
+    let member1GithubHandle = "thelezend";
 
     await program.methods
-      .addMember("lezend", "thelezend")
+      .addMember(member1Name, member1GithubHandle)
       .accountsStrict({
         member: member1,
         project,
@@ -199,6 +202,48 @@ describe("codecracy", () => {
           memberPubkey: hacker.publicKey,
           atlProgram: web3.AddressLookupTableProgram.programId,
           systemProgram: web3.SystemProgram.programId,
+        })
+        .signers([hacker])
+        .rpc();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
+    }
+  });
+
+  it("Valid member removal", async () => {
+    await program.methods
+      .removeMember()
+      .accountsStrict({
+        member: member1,
+        project,
+        memberPubkey: teamMember1.publicKey,
+        admin: admin.publicKey,
+      })
+      .rpc();
+
+    assert.isFalse(
+      (await program.account.member.fetch(member1)).isActive,
+      "Member should be removed"
+    );
+  });
+
+  it("Fail on invalid member removal", async () => {
+    await airdropSol(provider.connection, hacker.publicKey);
+
+    const [hackerMember] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("member"), project.toBuffer(), hacker.publicKey.toBuffer()],
+      program.programId
+    );
+
+    try {
+      await program.methods
+        .removeMember()
+        .accountsStrict({
+          member: member1,
+          project,
+          memberPubkey: hacker.publicKey,
+          admin: hacker.publicKey,
         })
         .signers([hacker])
         .rpc();
