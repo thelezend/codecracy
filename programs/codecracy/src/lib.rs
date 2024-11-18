@@ -44,4 +44,8 @@ pub mod codecracy {
     pub fn remove_member(ctx: Context<RemoveMember>) -> Result<()> {
         ctx.accounts.remove_member()
     }
+
+    pub fn close_project(ctx: Context<CloseProject>) -> Result<()> {
+        ctx.accounts.close_project()
+    }
 }

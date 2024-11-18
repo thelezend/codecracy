@@ -253,6 +253,37 @@ describe("codecracy", () => {
     }
   });
 
+  it("Valid project closure", async () => {
+    await program.methods
+      .closeProject()
+      .accountsStrict({
+        admin: admin.publicKey,
+        project,
+      })
+      .rpc();
+
+    assert.isFalse(
+      (await program.account.project.fetch(project)).isActive,
+      "Project should be closed"
+    );
+  });
+
+  it("Fail on invalid project closure", async () => {
+    try {
+      await program.methods
+        .closeProject()
+        .accountsStrict({
+          admin: hacker.publicKey,
+          project,
+        })
+        .signers([hacker])
+        .rpc();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
+    }
+  });
+
   it("Change admin", async () => {
     const newAdmin = anchor.web3.Keypair.generate();
     await airdropSol(provider.connection, newAdmin.publicKey);

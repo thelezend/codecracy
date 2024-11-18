@@ -9,3 +9,6 @@ pub use add_member::*;
 
 pub mod remove_member;
 pub use remove_member::*;
+
+pub mod close_project;
+pub use close_project::*;
