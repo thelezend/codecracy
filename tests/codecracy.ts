@@ -56,12 +56,15 @@ describe("codecracy", () => {
       .rpc({ skipPreflight: true });
 
     let projectData = await program.account.project.fetch(project);
-    assert.isTrue(projectData.admin.equals(admin.publicKey));
-    assert.strictEqual(projectData.projectName, projectName);
-    assert.strictEqual(projectData.githubHandle, githubHandle);
-    assert.strictEqual(projectData.vaultBump, vaultBump);
-    assert.strictEqual(projectData.bump, projectBump);
-    assert.isTrue(projectData.teamLut.equals(teamLut));
+    assert.deepEqual(projectData, {
+      admin: admin.publicKey,
+      projectName,
+      githubHandle,
+      teamLut,
+      isActive: true,
+      bump: projectBump,
+      vaultBump,
+    });
   });
 
   it("Fail on invalid project initialization", async () => {

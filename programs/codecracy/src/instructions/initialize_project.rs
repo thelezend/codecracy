@@ -82,6 +82,7 @@ impl<'info> InitializeProject<'info> {
         project.admin = self.admin.key();
         project.project_name = project_name;
         project.github_handle = github_handle;
+        project.is_active = true;
         project.bump = bumps.project;
         project.vault_bump = bumps.vault;
 

@@ -18,6 +18,9 @@ pub struct Project {
     /// Lookup table for team members
     pub team_lut: Pubkey,
 
+    /// Is the project active
+    pub is_active: bool,
+
     /// PDA bump seed for account derivation
     pub bump: u8,
 
