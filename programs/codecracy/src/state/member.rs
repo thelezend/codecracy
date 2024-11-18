@@ -10,5 +10,6 @@ pub struct Member {
     pub project: Pubkey,
     pub member_pubkey: Pubkey,
     pub score: u64,
+    pub is_active: bool,
     pub bump: u8,
 }

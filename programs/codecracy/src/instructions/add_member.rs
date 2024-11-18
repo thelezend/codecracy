@@ -65,6 +65,7 @@ impl<'info> AddMember<'info> {
             member_pubkey: self.member_pubkey.key(),
             project: self.project.key(),
             score: 0,
+            is_active: true,
             bump: bumps.member,
         });
 
