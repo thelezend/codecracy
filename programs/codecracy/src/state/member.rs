@@ -8,6 +8,7 @@ pub struct Member {
     #[max_len(32)]
     pub github_handle: String,
     pub project: Pubkey,
+    pub member_pubkey: Pubkey,
     pub score: u64,
     pub bump: u8,
 }

@@ -62,6 +62,7 @@ impl<'info> AddMember<'info> {
         self.member.set_inner(Member {
             name,
             github_handle,
+            member_pubkey: self.member_pubkey.key(),
             project: self.project.key(),
             score: 0,
             bump: bumps.member,
@@ -83,7 +84,7 @@ impl<'info> AddMember<'info> {
             self.team_lut.key(),
             self.project.key(),
             Some(self.admin.key()),
-            vec![self.member_pubkey.key()],
+            vec![self.member.key()],
         );
         let cpi_account_infos = [
             self.team_lut.to_account_info(),

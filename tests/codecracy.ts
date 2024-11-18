@@ -145,7 +145,7 @@ describe("codecracy", () => {
   });
 
   it("Valid member addition", async () => {
-    const [member] = web3.PublicKey.findProgramAddressSync(
+    const [member1] = web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from("member"),
         project.toBuffer(),
@@ -157,7 +157,7 @@ describe("codecracy", () => {
     await program.methods
       .addMember("lezend", "thelezend")
       .accountsStrict({
-        member,
+        member: member1,
         project,
         admin: admin.publicKey,
         teamLut,
@@ -170,12 +170,10 @@ describe("codecracy", () => {
     // Check if teamMember1's public key is present in the lookup table
     const atl = await provider.connection.getAddressLookupTable(teamLut);
     const addresses = atl.value.state.addresses;
-    const isTeamMember1Present = addresses.some((addr) =>
-      addr.equals(teamMember1.publicKey)
-    );
+    const isMember1Present = addresses.some((addr) => addr.equals(member1));
     assert.isTrue(
-      isTeamMember1Present,
-      "teamMember1's public key should be present in the lookup table"
+      isMember1Present,
+      "Member1 PDA should be present in the lookup table"
     );
   });
 
