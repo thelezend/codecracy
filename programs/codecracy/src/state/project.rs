@@ -15,6 +15,9 @@ pub struct Project {
     #[max_len(MAX_GITHUB_HANDLE_LENGTH)]
     pub github_handle: String,
 
+    /// Lookup table for team members
+    pub team_lut: Pubkey,
+
     /// PDA bump seed for account derivation
     pub bump: u8,
 

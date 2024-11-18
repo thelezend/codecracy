@@ -76,13 +76,13 @@ impl<'info> InitializeProject<'info> {
             ProjectInitializationError::InvalidGithubHandle
         );
 
-        self.project.set_inner(Project {
-            admin: self.admin.key(),
-            project_name: project_name.clone(),
-            github_handle: github_handle.clone(),
-            bump: bumps.project,
-            vault_bump: bumps.vault,
-        });
+        // Initialize project
+        let project = &mut self.project;
+        project.admin = self.admin.key();
+        project.project_name = project_name;
+        project.github_handle = github_handle;
+        project.bump = bumps.project;
+        project.vault_bump = bumps.vault;
 
         Ok(())
     }
@@ -97,6 +97,7 @@ impl<'info> InitializeProject<'info> {
             ProjectInitializationError::InvalidAddressLookupTable
         );
 
+        // Create address lookup table
         invoke(
             &atl_ix,
             &[
@@ -106,6 +107,9 @@ impl<'info> InitializeProject<'info> {
                 self.system_program.to_account_info(),
             ],
         )?;
+
+        // Set address lookup table
+        self.project.team_lut = atl_pubkey;
 
         Ok(())
     }
