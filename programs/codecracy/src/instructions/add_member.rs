@@ -8,7 +8,8 @@ use anchor_lang::{
 };
 
 use crate::{
-    error::LookupTableError, Member, Project, ADDRESS_LOOK_UP_TABLE_PROGRAM, PROJECT_CONFIG_SEED,
+    error::LookupTableError, Member, Project, ADDRESS_LOOK_UP_TABLE_PROGRAM, MEMBER_SEED,
+    PROJECT_CONFIG_SEED,
 };
 
 #[derive(Accounts)]
@@ -27,7 +28,7 @@ pub struct AddMember<'info> {
         payer = admin,
         space = Member::INIT_SPACE + 8,
         seeds = [
-            b"member",
+            MEMBER_SEED.as_bytes(),
             project.key().as_ref(),
             member_pubkey.key().as_ref()
             ],

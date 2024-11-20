@@ -12,3 +12,6 @@ pub use remove_member::*;
 
 pub mod close_project;
 pub use close_project::*;
+
+pub mod initialize_vote;
+pub use initialize_vote::*;

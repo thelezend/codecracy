@@ -41,6 +41,14 @@ pub mod codecracy {
         ctx.accounts.update_team_lut()
     }
 
+    pub fn initialize_vote(
+        ctx: Context<InitializeVote>,
+        pull_request: u32,
+        close_time: u64,
+    ) -> Result<()> {
+        ctx.accounts.initialize_vote(pull_request, close_time)
+    }
+
     pub fn remove_member(ctx: Context<RemoveMember>) -> Result<()> {
         ctx.accounts.remove_member()
     }

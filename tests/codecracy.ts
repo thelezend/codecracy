@@ -45,7 +45,12 @@ describe("codecracy", () => {
     program.programId
   );
 
-  it("Valid project intialization", async () => {
+  const [hackerMember] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("member"), project.toBuffer(), hacker.publicKey.toBuffer()],
+    program.programId
+  );
+
+  it("Project intialization", async () => {
     let recent_slot = new anchor.BN(await provider.connection.getSlot());
     teamLut = web3.PublicKey.findProgramAddressSync(
       [project.toBuffer(), recent_slot.toArrayLike(Buffer, "le", 8)],
@@ -76,7 +81,7 @@ describe("codecracy", () => {
     });
   });
 
-  it("Fail on invalid project initialization", async () => {
+  it("Fail on hacker project initialization", async () => {
     // Empty project name
     let projectName = "";
     let githubHandle = "a";
@@ -156,7 +161,7 @@ describe("codecracy", () => {
     }
   });
 
-  it("Valid member addition", async () => {
+  it("Member addition", async () => {
     let member1Name = "lezend";
     let member1GithubHandle = "thelezend";
 
@@ -183,13 +188,8 @@ describe("codecracy", () => {
     );
   });
 
-  it("Fail on invalid member addition", async () => {
+  it("Fail on hacker member addition", async () => {
     await airdropSol(provider.connection, hacker.publicKey);
-
-    const [hackerMember] = web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("member"), project.toBuffer(), hacker.publicKey.toBuffer()],
-      program.programId
-    );
 
     try {
       await program.methods
@@ -211,7 +211,60 @@ describe("codecracy", () => {
     }
   });
 
-  it("Valid member removal", async () => {
+  let [vote, voteBump] = web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("vote"),
+      new anchor.BN(1).toArrayLike(Buffer, "le", 4),
+      project.toBuffer(),
+    ],
+    program.programId
+  );
+
+  it("Vote initialization", async () => {
+    await airdropSol(provider.connection, teamMember1.publicKey);
+
+    await program.methods
+      .initializeVote(1, new anchor.BN(1732103413))
+      .accountsStrict({
+        project,
+        member: member1,
+        vote,
+        user: teamMember1.publicKey,
+        systemProgram: web3.SystemProgram.programId,
+      })
+      .signers([teamMember1])
+      .rpc();
+  });
+
+  it("Fail on hacker vote initialization", async () => {
+    let hackerVote = web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("vote"),
+        new anchor.BN(2).toArrayLike(Buffer, "le", 4),
+        project.toBuffer(),
+      ],
+      program.programId
+    )[0];
+
+    try {
+      await program.methods
+        .initializeVote(2, new anchor.BN(1732103413))
+        .accountsStrict({
+          project,
+          member: member1,
+          vote: hackerVote,
+          user: hacker.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        })
+        .signers([hacker])
+        .rpc();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintSeeds");
+    }
+  });
+
+  it("Member removal", async () => {
     await program.methods
       .removeMember()
       .accountsStrict({
@@ -228,7 +281,7 @@ describe("codecracy", () => {
     );
   });
 
-  it("Fail on invalid member removal", async () => {
+  it("Fail on hacker member removal", async () => {
     await airdropSol(provider.connection, hacker.publicKey);
 
     const [hackerMember] = web3.PublicKey.findProgramAddressSync(
@@ -253,7 +306,7 @@ describe("codecracy", () => {
     }
   });
 
-  it("Valid project closure", async () => {
+  it("Project closure", async () => {
     await program.methods
       .closeProject()
       .accountsStrict({
@@ -268,7 +321,7 @@ describe("codecracy", () => {
     );
   });
 
-  it("Fail on invalid project closure", async () => {
+  it("Fail on hacker project closure", async () => {
     try {
       await program.methods
         .closeProject()
@@ -284,7 +337,7 @@ describe("codecracy", () => {
     }
   });
 
-  it("Change admin", async () => {
+  it("Admin change", async () => {
     const newAdmin = anchor.web3.Keypair.generate();
     await airdropSol(provider.connection, newAdmin.publicKey);
 
@@ -310,7 +363,7 @@ describe("codecracy", () => {
       .rpc();
   });
 
-  it("Fail on invalid admin change", async () => {
+  it("Fail on hacker admin change", async () => {
     await airdropSol(provider.connection, hacker.publicKey);
 
     try {
