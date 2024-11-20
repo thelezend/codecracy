@@ -9,7 +9,7 @@ pub struct Member {
     pub github_handle: String,
     pub project: Pubkey,
     pub member_pubkey: Pubkey,
-    pub score: u64,
+    pub score: i64,
     pub is_active: bool,
     pub bump: u8,
 }

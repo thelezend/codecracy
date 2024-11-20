@@ -15,3 +15,14 @@ pub use close_project::*;
 
 pub mod initialize_vote;
 pub use initialize_vote::*;
+
+pub mod cast_vote;
+pub use cast_vote::*;
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum VoteType {
+    Low = 10,
+    Medium = 20,
+    High = 50,
+    Reject = -20,
+}
