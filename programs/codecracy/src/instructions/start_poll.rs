@@ -4,7 +4,7 @@ use crate::{Member, Poll, Project, MEMBER_SEED, POLL_SEED};
 
 #[derive(Accounts)]
 #[instruction(pull_request: u32)]
-pub struct InitializePoll<'info> {
+pub struct StartPoll<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
@@ -36,8 +36,8 @@ pub struct InitializePoll<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> InitializePoll<'info> {
-    pub fn initialize_poll(&mut self, pull_request: u32, close_time: u64) -> Result<()> {
+impl<'info> StartPoll<'info> {
+    pub fn start_poll(&mut self, pull_request: u32, close_time: u64) -> Result<()> {
         self.poll.set_inner(Poll {
             user: self.user.key(),
             pull_request,
