@@ -20,11 +20,11 @@ pub enum LookupTableError {
 
 #[error_code]
 pub enum CastVoteError {
-    #[msg("The Vote account doesn't belong to the project")]
+    #[msg("The Poll account doesn't belong to the project")]
     InvalidProject,
 
-    #[msg("The Vote account doesn't belong to the member")]
-    InvalidVote,
+    #[msg("The Poll account doesn't belong to the member")]
+    InvalidPoll,
 
     #[msg("Self vote is not allowed")]
     SelfVote,

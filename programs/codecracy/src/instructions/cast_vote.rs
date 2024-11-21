@@ -11,7 +11,7 @@ pub struct CastVote<'info> {
 
     pub project: Account<'info, Project>,
 
-    // The member account of the voter
+    // The member PDA account of the voter
     #[account(
         seeds = [
             MEMBER_SEED.as_bytes(),
@@ -22,17 +22,17 @@ pub struct CastVote<'info> {
     )]
     pub member: Account<'info, Member>,
 
-    // The member who initialized the vote
+    // The member who initialized the poll
     #[account(
         mut,
         constraint = poll_initializor_member.member_pubkey.key() != voter.key() @CastVoteError::SelfVote
     )]
     pub poll_initializor_member: Account<'info, Member>,
 
-    // The vote account
+    // The poll account
     #[account(
         constraint = poll.project == project.key() @CastVoteError::InvalidProject,
-        constraint = poll.user == poll_initializor_member.member_pubkey.key() @CastVoteError::InvalidVote,
+        constraint = poll.user == poll_initializor_member.member_pubkey.key() @CastVoteError::InvalidPoll,
     )]
     pub poll: Account<'info, Poll>,
 

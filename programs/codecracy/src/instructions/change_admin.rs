@@ -7,8 +7,7 @@ pub struct AdminChange<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
-    /// CHECK: No check required for new admin
-    pub new_admin: UncheckedAccount<'info>,
+    pub new_admin: SystemAccount<'info>,
 
     #[account(
         mut,

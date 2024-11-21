@@ -6,3 +6,6 @@ pub use member::*;
 
 pub mod poll;
 pub use poll::*;
+
+pub mod vote;
+pub use vote::*;

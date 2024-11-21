@@ -48,7 +48,7 @@ pub struct InitializeProject<'info> {
     #[account(mut)]
     pub lookup_table: UncheckedAccount<'info>,
 
-    /// CHECK: No Lookup table program found in anchor, checking manually
+    /// CHECK: Checking manually
     #[account(
         constraint = atl_program.key() == Pubkey::from_str(ADDRESS_LOOK_UP_TABLE_PROGRAM).unwrap() @ LookupTableError::InvalidAddressLookupTableProgram
     )]
@@ -93,13 +93,13 @@ impl<'info> InitializeProject<'info> {
         // Create address lookup table instruction
         let (atl_ix, atl_pubkey) = create_lookup_table(self.project.key(), self.admin.key(), slot);
 
-        // Require address lookup table to be present
+        // Validate address lookup table to be present
         require!(
             self.lookup_table.key() == atl_pubkey,
             LookupTableError::InvalidAddressLookupTable
         );
 
-        // Create address lookup table
+        // Create address lookup table pubkey
         invoke(
             &atl_ix,
             &[

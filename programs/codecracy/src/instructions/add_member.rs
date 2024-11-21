@@ -16,7 +16,7 @@ use crate::{
 pub struct AddMember<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
-    pub member_pubkey: SystemAccount<'info>,
+    pub new_user: SystemAccount<'info>,
 
     #[account(
         has_one = admin
@@ -30,20 +30,20 @@ pub struct AddMember<'info> {
         seeds = [
             MEMBER_SEED.as_bytes(),
             project.key().as_ref(),
-            member_pubkey.key().as_ref()
+            new_user.key().as_ref()
             ],
         bump
     )]
     pub member: Account<'info, Member>,
 
-    /// CHECK: No Lookup table found in anchor, checking manually
+    /// CHECK: Checking manually
     #[account(
         mut,
         constraint = team_lut.key() == project.team_lut.key() @ LookupTableError::InvalidAddressLookupTable
     )]
     pub team_lut: UncheckedAccount<'info>,
 
-    /// CHECK: No Lookup table program found in anchor, checking manually
+    /// CHECK: Checking manually
     #[account(
         constraint = atl_program.key() == Pubkey::from_str(ADDRESS_LOOK_UP_TABLE_PROGRAM).unwrap() @ LookupTableError::InvalidAddressLookupTableProgram
     )]
@@ -62,7 +62,7 @@ impl<'info> AddMember<'info> {
         self.member.set_inner(Member {
             name,
             github_handle,
-            member_pubkey: self.member_pubkey.key(),
+            member_pubkey: self.new_user.key(),
             project: self.project.key(),
             score: 0,
             is_active: true,

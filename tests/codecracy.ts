@@ -172,7 +172,7 @@ describe("codecracy", () => {
         project,
         admin: admin.publicKey,
         teamLut,
-        memberPubkey: teamMember1.publicKey,
+        newUser: teamMember1.publicKey,
         atlProgram: web3.AddressLookupTableProgram.programId,
         systemProgram: web3.SystemProgram.programId,
       })
@@ -199,7 +199,7 @@ describe("codecracy", () => {
           project,
           admin: hacker.publicKey,
           teamLut,
-          memberPubkey: hacker.publicKey,
+          newUser: hacker.publicKey,
           atlProgram: web3.AddressLookupTableProgram.programId,
           systemProgram: web3.SystemProgram.programId,
         })
