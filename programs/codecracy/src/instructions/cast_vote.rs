@@ -1,8 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{error::CastVoteError, Member, Poll, Project, MEMBER_SEED};
-
-use super::VoteType;
+use crate::{error::CastVoteError, Member, Poll, Project, Vote, VoteType, VOTE_SEED};
 
 #[derive(Accounts)]
 pub struct CastVote<'info> {
@@ -10,17 +8,6 @@ pub struct CastVote<'info> {
     pub voter: Signer<'info>,
 
     pub project: Account<'info, Project>,
-
-    // The member PDA account of the voter
-    #[account(
-        seeds = [
-            MEMBER_SEED.as_bytes(),
-            project.key().as_ref(),
-            voter.key().as_ref(),
-        ],
-        bump = member.bump
-    )]
-    pub member: Account<'info, Member>,
 
     // The member who initialized the poll
     #[account(
@@ -36,6 +23,19 @@ pub struct CastVote<'info> {
     )]
     pub poll: Account<'info, Poll>,
 
+    #[account(
+        init_if_needed,
+        payer = voter,
+        space = Vote::INIT_SPACE + 8,
+        seeds = [
+            VOTE_SEED.as_bytes(),
+            poll.key().as_ref(),
+            voter.key().as_ref(),
+        ],
+        bump
+    )]
+    pub vote: Account<'info, Vote>,
+
     pub system_program: Program<'info, System>,
 }
 
@@ -46,13 +46,19 @@ impl<'info> CastVote<'info> {
             return Err(CastVoteError::TimeExpired.into());
         }
 
-        todo!("Duplicate votes not allowed");
-
         if vote_type == VoteType::Reject {
             self.poll.rejections += 1;
         }
         self.poll_initializor_member.score += vote_type as i64;
         self.poll.votes += 1;
+
+        self.vote.set_inner(Vote {
+            voter: self.voter.key(),
+            project: self.project.key(),
+            poll: self.poll.key(),
+            vote_type,
+            bump: self.vote.bump,
+        });
         Ok(())
     }
 }

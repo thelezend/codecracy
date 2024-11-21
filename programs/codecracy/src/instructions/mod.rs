@@ -18,11 +18,3 @@ pub use start_poll::*;
 
 pub mod cast_vote;
 pub use cast_vote::*;
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum VoteType {
-    Low = 10,
-    Medium = 20,
-    High = 50,
-    Reject = -20,
-}

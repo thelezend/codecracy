@@ -224,7 +224,7 @@ describe("codecracy", () => {
     await airdropSol(provider.connection, teamMember1.publicKey);
 
     await program.methods
-      .startPoll(1, new anchor.BN(1732103413))
+      .startPoll(1, new anchor.BN(Math.floor(Date.now() / 1000) + 60))
       .accountsStrict({
         project,
         member: member1,
@@ -262,6 +262,44 @@ describe("codecracy", () => {
       const err = anchor.AnchorError.parse(_err.logs);
       assert.strictEqual(err.error.errorCode.code, "ConstraintSeeds");
     }
+  });
+
+  it("Cast vote", async () => {
+    const [adminMember, adminMemberBump] =
+      web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("member"), project.toBuffer(), admin.publicKey.toBuffer()],
+        program.programId
+      );
+
+    await program.methods
+      .addMember("admin", "admin101")
+      .accountsStrict({
+        member: adminMember,
+        project,
+        admin: admin.publicKey,
+        teamLut,
+        newUser: admin.publicKey,
+        atlProgram: web3.AddressLookupTableProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    const [adminVote, adminVoteBump] = web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("vote"), poll.toBuffer(), admin.publicKey.toBuffer()],
+      program.programId
+    );
+
+    await program.methods
+      .castVote({ medium: {} })
+      .accountsStrict({
+        poll,
+        project,
+        vote: adminVote,
+        voter: admin.publicKey,
+        systemProgram: web3.SystemProgram.programId,
+        pollInitializorMember: member1,
+      })
+      .rpc();
   });
 
   it("Member removal", async () => {

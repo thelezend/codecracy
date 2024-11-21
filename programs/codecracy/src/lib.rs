@@ -45,6 +45,10 @@ pub mod codecracy {
         ctx.accounts.start_poll(pull_request, close_time)
     }
 
+    pub fn cast_vote(ctx: Context<CastVote>, vote_type: VoteType) -> Result<()> {
+        ctx.accounts.cast_vote(vote_type)
+    }
+
     pub fn remove_member(ctx: Context<RemoveMember>) -> Result<()> {
         ctx.accounts.remove_member()
     }
