@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
-use crate::{Member, Project, Vote, MEMBER_SEED, VOTE_SEED};
+use crate::{Member, Poll, Project, MEMBER_SEED, POLL_SEED};
 
 #[derive(Accounts)]
 #[instruction(pull_request: u32)]
-pub struct InitializeVote<'info> {
+pub struct InitializePoll<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
@@ -23,29 +23,29 @@ pub struct InitializeVote<'info> {
     #[account(
         init,
         payer = user,
-        space = Vote::INIT_SPACE + 8,
+        space = Poll::INIT_SPACE + 8,
         seeds = [
-            VOTE_SEED.as_bytes(),
+            POLL_SEED.as_bytes(),
             pull_request.to_le_bytes().as_ref(),
             project.key().as_ref(),
         ],
         bump
     )]
-    pub vote: Account<'info, Vote>,
+    pub poll: Account<'info, Poll>,
 
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> InitializeVote<'info> {
-    pub fn initialize_vote(&mut self, pull_request: u32, close_time: u64) -> Result<()> {
-        self.vote.set_inner(Vote {
+impl<'info> InitializePoll<'info> {
+    pub fn initialize_poll(&mut self, pull_request: u32, close_time: u64) -> Result<()> {
+        self.poll.set_inner(Poll {
             user: self.user.key(),
             pull_request,
             project: self.project.key(),
             votes: 0,
             close_time,
             rejections: 0,
-            bump: self.vote.bump,
+            bump: self.poll.bump,
         });
         Ok(())
     }

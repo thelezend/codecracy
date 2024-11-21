@@ -13,8 +13,8 @@ pub use remove_member::*;
 pub mod close_project;
 pub use close_project::*;
 
-pub mod initialize_vote;
-pub use initialize_vote::*;
+pub mod initialize_poll;
+pub use initialize_poll::*;
 
 pub mod cast_vote;
 pub use cast_vote::*;

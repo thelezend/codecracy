@@ -8,7 +8,7 @@ pub const VAULT_SEED: &str = "vault";
 #[constant]
 pub const MEMBER_SEED: &str = "member";
 #[constant]
-pub const VOTE_SEED: &str = "vote";
+pub const POLL_SEED: &str = "poll";
 
 pub const ADDRESS_LOOK_UP_TABLE_PROGRAM: &str = "AddressLookupTab1e1111111111111111111111111";
 

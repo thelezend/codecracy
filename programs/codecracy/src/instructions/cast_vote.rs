@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{error::CastVoteError, Member, Project, Vote, MEMBER_SEED};
+use crate::{error::CastVoteError, Member, Poll, Project, MEMBER_SEED};
 
 use super::VoteType;
 
@@ -25,16 +25,16 @@ pub struct CastVote<'info> {
     // The member who initialized the vote
     #[account(
         mut,
-        constraint = vote_initializor_member.member_pubkey.key() != voter.key() @CastVoteError::SelfVote
+        constraint = poll_initializor_member.member_pubkey.key() != voter.key() @CastVoteError::SelfVote
     )]
-    pub vote_initializor_member: Account<'info, Member>,
+    pub poll_initializor_member: Account<'info, Member>,
 
     // The vote account
     #[account(
-        constraint = vote.project == project.key() @CastVoteError::InvalidProject,
-        constraint = vote.user == vote_initializor_member.member_pubkey.key() @CastVoteError::InvalidVote,
+        constraint = poll.project == project.key() @CastVoteError::InvalidProject,
+        constraint = poll.user == poll_initializor_member.member_pubkey.key() @CastVoteError::InvalidVote,
     )]
-    pub vote: Account<'info, Vote>,
+    pub poll: Account<'info, Poll>,
 
     pub system_program: Program<'info, System>,
 }
@@ -42,17 +42,17 @@ pub struct CastVote<'info> {
 impl<'info> CastVote<'info> {
     pub fn cast_vote(&mut self, vote_type: VoteType) -> Result<()> {
         // Check if the voting period has ended
-        if self.vote.close_time < Clock::get()?.unix_timestamp as u64 {
+        if self.poll.close_time < Clock::get()?.unix_timestamp as u64 {
             return Err(CastVoteError::TimeExpired.into());
         }
 
         todo!("Duplicate votes not allowed");
 
         if vote_type == VoteType::Reject {
-            self.vote.rejections += 1;
+            self.poll.rejections += 1;
         }
-        self.vote_initializor_member.score += vote_type as i64;
-        self.vote.votes += 1;
+        self.poll_initializor_member.score += vote_type as i64;
+        self.poll.votes += 1;
         Ok(())
     }
 }

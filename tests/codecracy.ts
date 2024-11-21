@@ -211,24 +211,24 @@ describe("codecracy", () => {
     }
   });
 
-  let [vote, voteBump] = web3.PublicKey.findProgramAddressSync(
+  let [poll, pollBump] = web3.PublicKey.findProgramAddressSync(
     [
-      Buffer.from("vote"),
+      Buffer.from("poll"),
       new anchor.BN(1).toArrayLike(Buffer, "le", 4),
       project.toBuffer(),
     ],
     program.programId
   );
 
-  it("Vote initialization", async () => {
+  it("Poll initialization", async () => {
     await airdropSol(provider.connection, teamMember1.publicKey);
 
     await program.methods
-      .initializeVote(1, new anchor.BN(1732103413))
+      .initializePoll(1, new anchor.BN(1732103413))
       .accountsStrict({
         project,
         member: member1,
-        vote,
+        poll,
         user: teamMember1.publicKey,
         systemProgram: web3.SystemProgram.programId,
       })
@@ -236,10 +236,10 @@ describe("codecracy", () => {
       .rpc();
   });
 
-  it("Fail on hacker vote initialization", async () => {
-    let hackerVote = web3.PublicKey.findProgramAddressSync(
+  it("Fail on hacker poll initialization", async () => {
+    let hackerPoll = web3.PublicKey.findProgramAddressSync(
       [
-        Buffer.from("vote"),
+        Buffer.from("poll"),
         new anchor.BN(2).toArrayLike(Buffer, "le", 4),
         project.toBuffer(),
       ],
@@ -248,11 +248,11 @@ describe("codecracy", () => {
 
     try {
       await program.methods
-        .initializeVote(2, new anchor.BN(1732103413))
+        .initializePoll(2, new anchor.BN(1732103413))
         .accountsStrict({
           project,
           member: member1,
-          vote: hackerVote,
+          poll: hackerPoll,
           user: hacker.publicKey,
           systemProgram: web3.SystemProgram.programId,
         })

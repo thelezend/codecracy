@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 #[account]
 #[derive(InitSpace)]
-pub struct Vote {
+pub struct Poll {
     pub user: Pubkey,
     pub pull_request: u32,
     pub project: Pubkey,
