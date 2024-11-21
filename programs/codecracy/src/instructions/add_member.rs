@@ -66,6 +66,7 @@ impl<'info> AddMember<'info> {
             project: self.project.key(),
             score: 0,
             is_active: true,
+            funds_claimed: false,
             bump: bumps.member,
         });
 

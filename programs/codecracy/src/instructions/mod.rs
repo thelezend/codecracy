@@ -18,3 +18,6 @@ pub use start_poll::*;
 
 pub mod cast_vote;
 pub use cast_vote::*;
+
+pub mod claim;
+pub use claim::*;

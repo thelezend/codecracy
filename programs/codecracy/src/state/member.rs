@@ -11,5 +11,6 @@ pub struct Member {
     pub member_pubkey: Pubkey,
     pub score: i64,
     pub is_active: bool,
+    pub funds_claimed: bool,
     pub bump: u8,
 }

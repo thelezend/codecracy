@@ -32,3 +32,15 @@ pub enum CastVoteError {
     #[msg("Vote time has expired")]
     TimeExpired,
 }
+
+#[error_code]
+pub enum ClaimError {
+    #[msg("Project is not closed")]
+    ProjectNotClosed,
+
+    #[msg("Member score is 0")]
+    InsufficientScore,
+
+    #[msg("Funds have already been claimed")]
+    FundsAlreadyClaimed,
+}
