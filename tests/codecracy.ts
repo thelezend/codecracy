@@ -224,7 +224,7 @@ describe("codecracy", () => {
     await airdropSol(provider.connection, teamMember1.publicKey);
 
     await program.methods
-      .initializePoll(1, new anchor.BN(1732103413))
+      .startPoll(1, new anchor.BN(1732103413))
       .accountsStrict({
         project,
         member: member1,
@@ -248,7 +248,7 @@ describe("codecracy", () => {
 
     try {
       await program.methods
-        .initializePoll(2, new anchor.BN(1732103413))
+        .startPoll(2, new anchor.BN(1732103413))
         .accountsStrict({
           project,
           member: member1,
