@@ -86,7 +86,12 @@ export function useCodecracyProgram() {
         })
       );
 
-      return [...adminProjects, ...memberProjects];
+      const allProjects = [...adminProjects, ...memberProjects];
+      return Array.from(
+        new Set(allProjects.map((p) => p.pubkey.toBase58()))
+      ).map((pubkey) =>
+        allProjects.find((p) => p.pubkey.toBase58() === pubkey)
+      );
     },
   });
 
