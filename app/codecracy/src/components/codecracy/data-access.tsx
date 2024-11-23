@@ -2,6 +2,7 @@
 
 import {
   deriveLookupTableAddress,
+  getMemberPda,
   getProjectPda,
   getVaultPda,
 } from "@/components/codecracy/pdas";
@@ -43,7 +44,7 @@ export function useCodecracyProgram() {
         ]),
         program.account.member.all([
           {
-            memcmp: { offset: 8 + 96, bytes: userWallet.publicKey.toBase58() },
+            memcmp: { offset: 8 + 32, bytes: userWallet.publicKey.toBase58() },
           },
         ]),
       ]);
@@ -89,34 +90,18 @@ export function useCodecracyProgram() {
     },
   });
 
-  const useGetProjects = (filter?: Buffer | GetProgramAccountsFilter[]) => {
-    return useQuery({
-      queryKey: [
-        "codecracy",
-        "projects",
-        network,
-        userWallet?.publicKey.toBase58(),
-        filter,
-      ],
-      queryFn: async () => {
-        if (!userWallet?.publicKey) return [];
-        return await program.account.project.all(filter);
-      },
-    });
-  };
-
-  const useGetMembers = (filter?: Buffer | GetProgramAccountsFilter[]) => {
+  const useGetMembers = (filters?: Buffer | GetProgramAccountsFilter[]) => {
     return useQuery({
       queryKey: [
         "codecracy",
         "members",
         network,
         userWallet?.publicKey.toBase58(),
-        filter,
+        filters,
       ],
       queryFn: async () => {
         if (!userWallet?.publicKey) return [];
-        return await program.account.member.all(filter);
+        return await program.account.member.all(filters);
       },
     });
   };
@@ -181,15 +166,53 @@ export function useCodecracyProgram() {
     });
   };
 
+  const addMember = useMutation({
+    mutationKey: ["codecracy", "addMember", network],
+    mutationFn: async ({
+      memberName,
+      githubHandle,
+      project,
+      newUser,
+    }: {
+      memberName: string;
+      githubHandle: string;
+      project: PublicKey;
+      newUser: PublicKey;
+    }) => {
+      if (!userWallet) return;
+
+      const projectData = await program.account.project.fetch(project);
+
+      const member = getMemberPda(project, newUser, program.programId);
+
+      const tx = await program.methods
+        .addMember(memberName, githubHandle)
+        .accountsStrict({
+          admin: userWallet.publicKey,
+          project,
+          member,
+          newUser,
+          teamLut: projectData.teamLut,
+          atlProgram: AddressLookupTableProgram.programId,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+      return tx;
+    },
+    onSuccess: (tx) => {
+      console.log(tx);
+    },
+  });
+
   return {
     program,
     CODECRACY_PROGRAM_ID,
     getProjects,
-    useGetProjects,
     useGetMembers,
     createProject,
     useGetProject,
     useFetchLookupTableAddresses,
+    addMember,
   };
 }
 

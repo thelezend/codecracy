@@ -406,24 +406,12 @@ export type Codecracy = {
         kind: "struct";
         fields: [
           {
-            name: "name";
-            type: "string";
-          },
-          {
-            name: "githubHandle";
-            type: "string";
-          },
-          {
             name: "project";
             type: "pubkey";
           },
           {
             name: "memberPubkey";
             type: "pubkey";
-          },
-          {
-            name: "score";
-            type: "i64";
           },
           {
             name: "isActive";
@@ -434,8 +422,20 @@ export type Codecracy = {
             type: "bool";
           },
           {
+            name: "score";
+            type: "i64";
+          },
+          {
             name: "bump";
             type: "u8";
+          },
+          {
+            name: "name";
+            type: "string";
+          },
+          {
+            name: "githubHandle";
+            type: "string";
           }
         ];
       };
@@ -487,23 +487,14 @@ export type Codecracy = {
             type: "pubkey";
           },
           {
-            name: "projectName";
-            docs: ["Project name, limited by MAX_PROJECT_NAME_LENGTH"];
-            type: "string";
-          },
-          {
-            name: "githubHandle";
-            type: "string";
+            name: "isActive";
+            docs: ["Is the project active"];
+            type: "bool";
           },
           {
             name: "teamLut";
             docs: ["Lookup table for team members"];
             type: "pubkey";
-          },
-          {
-            name: "isActive";
-            docs: ["Is the project active"];
-            type: "bool";
           },
           {
             name: "bump";
@@ -513,6 +504,15 @@ export type Codecracy = {
           {
             name: "vaultBump";
             type: "u8";
+          },
+          {
+            name: "projectName";
+            docs: ["Project name, limited by MAX_PROJECT_NAME_LENGTH"];
+            type: "string";
+          },
+          {
+            name: "githubHandle";
+            type: "string";
           }
         ];
       };

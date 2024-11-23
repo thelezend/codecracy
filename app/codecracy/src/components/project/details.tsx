@@ -1,55 +1,78 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
-import { TypographyH2 } from "../typography/h2";
+import { useNetwork } from "../solana/solana-provider";
+import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { PublicKey } from "@solana/web3.js";
 
 export default function ProjectDetails({
   projectAddress,
 }: {
   projectAddress: string;
 }) {
-  const { useGetProject, useGetMembers } = useCodecracyProgram();
-
+  const { useGetProject } = useCodecracyProgram();
+  const { network } = useNetwork();
   const project = useGetProject(projectAddress);
-  const teamMembers = useGetMembers([
-    {
-      memcmp: { offset: 8 + 64, bytes: projectAddress },
-    },
-  ]);
-
-  try {
-    new PublicKey(projectAddress);
-  } catch (error) {
-    console.log(error);
-    return notFound();
-  }
-
-  if (project.isLoading || teamMembers.isLoading) {
-    return <div>Loading...</div>;
-  }
+  const admin = project.data?.admin.toBase58();
 
   return (
-    <div>
-      <TypographyH2 className="mb-4">{project.data?.projectName}</TypographyH2>
+    <Card className="mb-8 w-1/3">
+      <CardHeader>
+        <CardTitle>Details</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-1">
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Project</span>
+          <div className="flex gap-1 items-center">
+            <span className="font-mono">
+              {projectAddress.slice(0, 5)}...{projectAddress.slice(-4)}
+            </span>
+            <Button asChild variant={"link"} className="p-0">
+              <Link
+                href={`https://explorer.solana.com/address/${projectAddress}?cluster=${network}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={`https://avatars.githubusercontent.com/u/92743431?s=200&v=4`}
+                  width={16}
+                  height={16}
+                  alt="Solscan Logo"
+                />
+              </Link>
+            </Button>
+          </div>
+        </div>
 
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="list-disc pl-5 mb-4">
-            {teamMembers.data?.map((member) => (
-              <li key={member.publicKey.toBase58()}>
-                {member.publicKey.toBase58()}
-              </li>
-            ))}
-          </ul>
-          {/* <AddMemberButton projectId={project.id} /> */}
-        </CardContent>
-      </Card>
-    </div>
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Admin</span>
+          <div className="flex gap-1 items-center">
+            <span className="font-mono">
+              {admin?.slice(0, 5)}...{admin?.slice(-4)}
+            </span>
+            <Button asChild variant={"link"} className="p-0">
+              <Link
+                href={`https://explorer.solana.com/address/${admin}?cluster=${network}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={`https://avatars.githubusercontent.com/u/92743431?s=200&v=4`}
+                  width={16}
+                  height={16}
+                  alt="Solscan Logo"
+                />
+              </Link>
+            </Button>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Active</span>
+          <span>{project.data?.isActive.toString()}</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

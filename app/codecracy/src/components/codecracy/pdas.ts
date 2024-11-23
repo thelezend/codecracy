@@ -3,6 +3,7 @@ import { AddressLookupTableProgram, PublicKey } from "@solana/web3.js";
 
 const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
+const MEMBER_SEED = "member";
 
 export function getProjectPda(
   projectName: string,
@@ -19,6 +20,19 @@ export function getProjectPda(
 
 export function getVaultPda(project: PublicKey, programId: PublicKey) {
   const seeds = [Buffer.from(VAULT_SEED), project.toBuffer()];
+  return PublicKey.findProgramAddressSync(seeds, programId)[0];
+}
+
+export function getMemberPda(
+  project: PublicKey,
+  memberPubkey: PublicKey,
+  programId: PublicKey
+) {
+  const seeds = [
+    Buffer.from(MEMBER_SEED),
+    project.toBuffer(),
+    memberPubkey.toBuffer(),
+  ];
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 

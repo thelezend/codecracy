@@ -3,14 +3,14 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Member {
+    pub project: Pubkey,
+    pub member_pubkey: Pubkey,
+    pub is_active: bool,
+    pub funds_claimed: bool,
+    pub score: i64,
+    pub bump: u8,
     #[max_len(32)]
     pub name: String,
     #[max_len(32)]
     pub github_handle: String,
-    pub project: Pubkey,
-    pub member_pubkey: Pubkey,
-    pub score: i64,
-    pub is_active: bool,
-    pub funds_claimed: bool,
-    pub bump: u8,
 }

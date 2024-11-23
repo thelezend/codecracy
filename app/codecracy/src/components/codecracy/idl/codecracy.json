@@ -546,24 +546,12 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "github_handle",
-            "type": "string"
-          },
-          {
             "name": "project",
             "type": "pubkey"
           },
           {
             "name": "member_pubkey",
             "type": "pubkey"
-          },
-          {
-            "name": "score",
-            "type": "i64"
           },
           {
             "name": "is_active",
@@ -574,8 +562,20 @@
             "type": "bool"
           },
           {
+            "name": "score",
+            "type": "i64"
+          },
+          {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "github_handle",
+            "type": "string"
           }
         ]
       }
@@ -629,15 +629,11 @@
             "type": "pubkey"
           },
           {
-            "name": "project_name",
+            "name": "is_active",
             "docs": [
-              "Project name, limited by MAX_PROJECT_NAME_LENGTH"
+              "Is the project active"
             ],
-            "type": "string"
-          },
-          {
-            "name": "github_handle",
-            "type": "string"
+            "type": "bool"
           },
           {
             "name": "team_lut",
@@ -645,13 +641,6 @@
               "Lookup table for team members"
             ],
             "type": "pubkey"
-          },
-          {
-            "name": "is_active",
-            "docs": [
-              "Is the project active"
-            ],
-            "type": "bool"
           },
           {
             "name": "bump",
@@ -663,6 +652,17 @@
           {
             "name": "vault_bump",
             "type": "u8"
+          },
+          {
+            "name": "project_name",
+            "docs": [
+              "Project name, limited by MAX_PROJECT_NAME_LENGTH"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "github_handle",
+            "type": "string"
           }
         ]
       }
