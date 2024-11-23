@@ -1,0 +1,750 @@
+{
+  "address": "j8RWHX7RcLfWxkimpbgrSv6cPjUdpdGvjj3n3ikd53S",
+  "metadata": {
+    "name": "codecracy",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_member",
+      "discriminator": [
+        13,
+        116,
+        123,
+        130,
+        126,
+        198,
+        57,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "new_user"
+        },
+        {
+          "name": "project"
+        },
+        {
+          "name": "member",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  98,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "new_user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "team_lut",
+          "writable": true
+        },
+        {
+          "name": "atl_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "member_name",
+          "type": "string"
+        },
+        {
+          "name": "github_handle",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "cast_vote",
+      "discriminator": [
+        20,
+        212,
+        15,
+        189,
+        69,
+        180,
+        69,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "project"
+        },
+        {
+          "name": "poll_initializor_member",
+          "writable": true
+        },
+        {
+          "name": "poll"
+        },
+        {
+          "name": "vote",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poll"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "vote_type",
+          "type": {
+            "defined": {
+              "name": "VoteType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "change_admin",
+      "discriminator": [
+        193,
+        151,
+        203,
+        161,
+        200,
+        202,
+        32,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project_config"
+          ]
+        },
+        {
+          "name": "new_admin"
+        },
+        {
+          "name": "project_config",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_project",
+      "discriminator": [
+        117,
+        209,
+        53,
+        106,
+        93,
+        55,
+        112,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "project",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_project",
+      "discriminator": [
+        69,
+        126,
+        215,
+        37,
+        20,
+        60,
+        73,
+        235
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "The creator/admin of the project who will pay for initialization"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "project",
+          "docs": [
+            "Project configuration account that stores project details",
+            "This PDA is derived from the project name and Github handle"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project_name"
+              },
+              {
+                "kind": "arg",
+                "path": "github_handle"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Project vault that will hold the project's funds",
+            "This PDA is derived from the project_config PDA"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lookup_table",
+          "writable": true
+        },
+        {
+          "name": "atl_program"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "Required system program"
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project_name",
+          "type": "string"
+        },
+        {
+          "name": "github_handle",
+          "type": "string"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "remove_member",
+      "discriminator": [
+        171,
+        57,
+        231,
+        150,
+        167,
+        128,
+        18,
+        55
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "member_pubkey"
+        },
+        {
+          "name": "project"
+        },
+        {
+          "name": "member",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  98,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "member_pubkey"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "start_poll",
+      "discriminator": [
+        59,
+        188,
+        204,
+        28,
+        129,
+        88,
+        202,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "project"
+        },
+        {
+          "name": "member",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  98,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "pull_request"
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "pull_request",
+          "type": "u32"
+        },
+        {
+          "name": "close_time",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Member",
+      "discriminator": [
+        54,
+        19,
+        162,
+        21,
+        29,
+        166,
+        17,
+        198
+      ]
+    },
+    {
+      "name": "Poll",
+      "discriminator": [
+        110,
+        234,
+        167,
+        188,
+        231,
+        136,
+        153,
+        111
+      ]
+    },
+    {
+      "name": "Project",
+      "discriminator": [
+        205,
+        168,
+        189,
+        202,
+        181,
+        247,
+        142,
+        19
+      ]
+    },
+    {
+      "name": "Vote",
+      "discriminator": [
+        96,
+        91,
+        104,
+        57,
+        145,
+        35,
+        172,
+        155
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidProjectName",
+      "msg": "Length of the project name must be between 1 and 32 characters"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidGithubHandle",
+      "msg": "Length of the github handle must be between 1 and 32 characters"
+    }
+  ],
+  "types": [
+    {
+      "name": "Member",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "github_handle",
+            "type": "string"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "member_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "funds_claimed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Poll",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "pull_request",
+            "type": "u32"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "votes",
+            "type": "u32"
+          },
+          {
+            "name": "close_time",
+            "type": "u64"
+          },
+          {
+            "name": "rejections",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Project",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "The public key of the project creator/admin"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "project_name",
+            "docs": [
+              "Project name, limited by MAX_PROJECT_NAME_LENGTH"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "github_handle",
+            "type": "string"
+          },
+          {
+            "name": "team_lut",
+            "docs": [
+              "Lookup table for team members"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "is_active",
+            "docs": [
+              "Is the project active"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed for account derivation"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vote",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "poll",
+            "type": "pubkey"
+          },
+          {
+            "name": "vote_type",
+            "type": {
+              "defined": {
+                "name": "VoteType"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Low"
+          },
+          {
+            "name": "Medium"
+          },
+          {
+            "name": "High"
+          },
+          {
+            "name": "Reject"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "MEMBER_SEED",
+      "type": "string",
+      "value": "\"member\""
+    },
+    {
+      "name": "POLL_SEED",
+      "type": "string",
+      "value": "\"poll\""
+    },
+    {
+      "name": "PROJECT_CONFIG_SEED",
+      "type": "string",
+      "value": "\"project-config\""
+    },
+    {
+      "name": "VAULT_SEED",
+      "type": "string",
+      "value": "\"vault\""
+    },
+    {
+      "name": "VOTE_SEED",
+      "type": "string",
+      "value": "\"vote\""
+    }
+  ]
+}
