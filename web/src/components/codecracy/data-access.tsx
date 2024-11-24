@@ -18,7 +18,7 @@ import {
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAnchorProvider, useNetwork } from "../solana/solana-provider";
 
 export function useCodecracyProgram() {
@@ -171,41 +171,65 @@ export function useCodecracyProgram() {
     });
   };
 
-  const addMember = useMutation({
-    mutationKey: ["codecracy", "addMember", network],
-    mutationFn: async ({
-      githubHandle,
-      project,
-      newUser,
-    }: {
-      githubHandle: string;
-      project: PublicKey;
-      newUser: PublicKey;
-    }) => {
-      if (!userWallet) return;
+  const useAddMember = () => {
+    const queryClient = useQueryClient();
 
-      const projectData = await program.account.project.fetch(project);
+    return useMutation({
+      mutationKey: ["codecracy", "addMember", network],
+      mutationFn: async ({
+        githubHandle,
+        project,
+        newUser,
+      }: {
+        githubHandle: string;
+        project: PublicKey;
+        newUser: PublicKey;
+      }) => {
+        if (!userWallet) return;
 
-      const member = getMemberPda(project, newUser, program.programId);
+        const projectData = await program.account.project.fetch(project);
 
-      const tx = await program.methods
-        .addMember(githubHandle)
-        .accountsStrict({
-          admin: userWallet.publicKey,
-          project,
-          member,
-          newUser,
-          teamLut: projectData.teamLut,
-          atlProgram: AddressLookupTableProgram.programId,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
-      return tx;
-    },
-    onSuccess: (tx) => {
-      console.log(tx);
-    },
-  });
+        const member = getMemberPda(project, newUser, program.programId);
+
+        const tx = await program.methods
+          .addMember(githubHandle)
+          .accountsStrict({
+            admin: userWallet.publicKey,
+            project,
+            member,
+            newUser,
+            teamLut: projectData.teamLut,
+            atlProgram: AddressLookupTableProgram.programId,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        return tx;
+      },
+      onMutate: (variables) => {
+        return variables;
+      },
+      onSuccess: (tx, { project }) => {
+        console.log(tx);
+        const filters = [
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: project.toBase58(),
+            },
+          },
+        ];
+        queryClient.invalidateQueries({
+          queryKey: [
+            "codecracy",
+            "members",
+            network,
+            userWallet?.publicKey.toBase58(),
+            filters,
+          ],
+        });
+      },
+    });
+  };
 
   const useGetPollsList = (projectAddress: string) =>
     useQuery({
@@ -230,7 +254,7 @@ export function useCodecracyProgram() {
     createProject,
     useGetProject,
     useFetchLookupTableAddresses,
-    addMember,
+    useAddMember,
     useGetPollsList,
   };
 }

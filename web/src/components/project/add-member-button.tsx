@@ -45,7 +45,8 @@ export function AddMemberButton({
 }) {
   const [open, setOpen] = useState(false);
   const { publicKey } = useWallet();
-  const { addMember, useGetProject } = useCodecracyProgram();
+  const { useAddMember, useGetProject } = useCodecracyProgram();
+  const addMember = useAddMember();
   const project = useGetProject(projectAddress);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +58,6 @@ export function AddMemberButton({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("here");
     addMember.mutateAsync({
       project: new PublicKey(projectAddress),
       newUser: new PublicKey(values.memberAddress),
