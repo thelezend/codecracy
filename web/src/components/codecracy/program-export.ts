@@ -1,6 +1,6 @@
 import { AnchorProvider, Program, web3 } from "@coral-xyz/anchor";
-import CodecracyIDL from "./idl/codecracy.json";
-import type { Codecracy } from "./idl/codecracy";
+import CodecracyIDL from "../../../idl/codecracy.json";
+import type { Codecracy } from "../../../idl/codecracy";
 
 // Re-export the generated IDL and type
 export { Codecracy, CodecracyIDL };
