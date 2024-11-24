@@ -4,8 +4,8 @@ use anchor_lang::prelude::*;
 #[derive(InitSpace)]
 pub struct Poll {
     pub user: Pubkey,
-    pub pull_request: u32,
     pub project: Pubkey,
+    pub pull_request: u32,
     pub votes: u32,
     pub close_time: u64,
     pub rejections: u32,

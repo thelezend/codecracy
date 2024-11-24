@@ -450,12 +450,12 @@ export type Codecracy = {
             type: "pubkey";
           },
           {
-            name: "pullRequest";
-            type: "u32";
-          },
-          {
             name: "project";
             type: "pubkey";
+          },
+          {
+            name: "pullRequest";
+            type: "u32";
           },
           {
             name: "votes";

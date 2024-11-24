@@ -209,6 +209,21 @@ export function useCodecracyProgram() {
     },
   });
 
+  const useGetPollsList = (projectAddress: string) =>
+    useQuery({
+      queryKey: ["codecracy", "polls", network, userWallet, projectAddress],
+      queryFn: async () => {
+        return await program.account.poll.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: projectAddress,
+            },
+          },
+        ]);
+      },
+    });
+
   return {
     program,
     CODECRACY_PROGRAM_ID,
@@ -218,6 +233,7 @@ export function useCodecracyProgram() {
     useGetProject,
     useFetchLookupTableAddresses,
     addMember,
+    useGetPollsList,
   };
 }
 

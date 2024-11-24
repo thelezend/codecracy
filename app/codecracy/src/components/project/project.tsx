@@ -9,6 +9,7 @@ import { TypographyH2 } from "../typography/h2";
 import { Button } from "../ui/button";
 import ProjectDetails from "./details";
 import ProjectTeam from "./team";
+import { PollsList } from "./polls-list";
 
 export default function Project({
   projectAddress,
@@ -58,6 +59,8 @@ export default function Project({
         <ProjectDetails projectAddress={projectAddress} />
         <ProjectTeam projectAddress={projectAddress} />
       </div>
+
+      <PollsList projectAddress={projectAddress} />
     </div>
   );
 }
