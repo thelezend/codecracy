@@ -33,9 +33,6 @@ const formSchema = z.object({
   memberAddress: z.string().min(1, {
     message: "Member address must be at least 1 character.",
   }),
-  memberName: z.string().min(1, {
-    message: "Member name must be at least 1 character.",
-  }),
   githubHandle: z.string().min(1, {
     message: "Github handle must be at least 1 character.",
   }),
@@ -54,13 +51,13 @@ export function AddMemberButton({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      memberName: "",
       githubHandle: "",
       memberAddress: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("here");
     addMember.mutateAsync({
       project: new PublicKey(projectAddress),
       newUser: new PublicKey(values.memberAddress),
@@ -107,20 +104,7 @@ export function AddMemberButton({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="memberName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Member Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Lezend" {...field} />
-                  </FormControl>
-                  <FormDescription>Display name of your member</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="githubHandle"

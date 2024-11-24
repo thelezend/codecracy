@@ -42,7 +42,7 @@ export default function ProjectTeam({
               className="flex items-center justify-between"
             >
               <div className="flex items-center gap-1">
-                <span> {member.account.name}</span>
+                <span> {member.account.githubHandle}</span>
                 <Button asChild variant={"link"} className="p-0">
                   <Link
                     href={`https://github.com/${member.account.githubHandle}`}

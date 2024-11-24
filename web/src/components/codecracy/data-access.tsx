@@ -174,12 +174,10 @@ export function useCodecracyProgram() {
   const addMember = useMutation({
     mutationKey: ["codecracy", "addMember", network],
     mutationFn: async ({
-      memberName,
       githubHandle,
       project,
       newUser,
     }: {
-      memberName: string;
       githubHandle: string;
       project: PublicKey;
       newUser: PublicKey;
@@ -191,7 +189,7 @@ export function useCodecracyProgram() {
       const member = getMemberPda(project, newUser, program.programId);
 
       const tx = await program.methods
-        .addMember(memberName, githubHandle)
+        .addMember(githubHandle)
         .accountsStrict({
           admin: userWallet.publicKey,
           project,
