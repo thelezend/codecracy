@@ -31,13 +31,8 @@ pub mod codecracy {
         ctx.accounts.change_admin()
     }
 
-    pub fn add_member(
-        ctx: Context<AddMember>,
-        member_name: String,
-        github_handle: String,
-    ) -> Result<()> {
-        ctx.accounts
-            .add_member(member_name, github_handle, &ctx.bumps)?;
+    pub fn add_member(ctx: Context<AddMember>, github_handle: String) -> Result<()> {
+        ctx.accounts.add_member(github_handle, &ctx.bumps)?;
         ctx.accounts.update_team_lut()
     }
 

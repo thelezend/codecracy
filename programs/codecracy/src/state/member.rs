@@ -10,7 +10,5 @@ pub struct Member {
     pub score: i64,
     pub bump: u8,
     #[max_len(32)]
-    pub name: String,
-    #[max_len(32)]
     pub github_handle: String,
 }

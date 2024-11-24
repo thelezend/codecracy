@@ -162,11 +162,10 @@ describe("codecracy", () => {
   });
 
   it("Member addition", async () => {
-    let member1Name = "lezend";
     let member1GithubHandle = "thelezend";
 
     await program.methods
-      .addMember(member1Name, member1GithubHandle)
+      .addMember(member1GithubHandle)
       .accountsStrict({
         member: member1,
         project,
@@ -193,7 +192,7 @@ describe("codecracy", () => {
 
     try {
       await program.methods
-        .addMember("lezend", "thelezend")
+        .addMember("thelezend")
         .accountsStrict({
           member: hackerMember,
           project,
@@ -272,7 +271,7 @@ describe("codecracy", () => {
       );
 
     await program.methods
-      .addMember("admin", "admin101")
+      .addMember("admin101")
       .accountsStrict({
         member: adminMember,
         project,

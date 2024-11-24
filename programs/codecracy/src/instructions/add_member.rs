@@ -53,14 +53,8 @@ pub struct AddMember<'info> {
 }
 
 impl<'info> AddMember<'info> {
-    pub fn add_member(
-        &mut self,
-        name: String,
-        github_handle: String,
-        bumps: &AddMemberBumps,
-    ) -> Result<()> {
+    pub fn add_member(&mut self, github_handle: String, bumps: &AddMemberBumps) -> Result<()> {
         self.member.set_inner(Member {
-            name,
             github_handle,
             member_pubkey: self.new_user.key(),
             project: self.project.key(),
