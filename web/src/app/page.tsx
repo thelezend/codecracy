@@ -14,12 +14,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto p-4 flex flex-col gap-4">
-      <div className="flex items-center">
+    <div className="container mx-auto p-4 space-y-4">
+      <header className="flex items-center">
         <TypographyH2>Projects</TypographyH2>
         <CreateProjectButton />
-      </div>
-
+      </header>
       <ProjectList />
     </div>
   );
