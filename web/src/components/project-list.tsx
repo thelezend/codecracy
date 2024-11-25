@@ -1,82 +1,123 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import { motion } from "framer-motion";
 import { Project, useCodecracyProgram } from "./codecracy/data-access";
+import { ProjectCard } from "./project/project-card";
 import { TypographyMuted } from "./typography/muted";
+import { Card } from "./ui/card";
 
-// Project Card Component
-function ProjectCard({ project }: { project: Project }) {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const shimmerVariants = {
+  initial: { x: "-100%" },
+  animate: {
+    x: "100%",
+    transition: {
+      repeat: Infinity,
+      duration: 1.5,
+      ease: "linear",
+    },
+  },
+};
+
+function LoadingCard() {
   return (
-    <Card key={project.pubkey.toBase58()}>
-      <CardHeader>
-        <CardTitle>{project.projectName}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-500 mb-4">
-          {project.teamAddresses.length} members
-        </p>
-        <Link href={`/project/${project.pubkey.toBase58()}`}>
-          <Button>View</Button>
-        </Link>
-      </CardContent>
-    </Card>
+    <motion.div variants={itemVariants}>
+      <Card className="relative h-[200px] overflow-hidden border border-border/50 bg-card/30 backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5" />
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent skew-x-12"
+          variants={shimmerVariants}
+          initial="initial"
+          animate="animate"
+        />
+        <div className="p-6 space-y-4">
+          <div className="h-7 w-2/3 rounded bg-primary/10" />
+          <div className="space-y-2">
+            <div className="h-4 w-full rounded bg-primary/5" />
+            <div className="h-4 w-4/5 rounded bg-primary/5" />
+          </div>
+          <div className="absolute bottom-6 right-6">
+            <div className="h-9 w-24 rounded bg-primary/10" />
+          </div>
+        </div>
+      </Card>
+    </motion.div>
   );
 }
 
-// Empty State Component
-function EmptyState() {
-  return (
-    <div className="text-center p-8 space-y-2">
-      <TypographyMuted className="text-base">No projects found</TypographyMuted>
-      <TypographyMuted>Create a new project to get started</TypographyMuted>
-    </div>
-  );
-}
-
-// Loading State Component
 function LoadingState() {
   return (
-    <div className="text-center p-8">
-      <div className="animate-pulse space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 bg-gray-200 rounded-lg" />
-        ))}
+    <motion.div
+      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {[1, 2, 3].map((i) => (
+        <LoadingCard key={i} />
+      ))}
+    </motion.div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <Card className="border border-border/50 bg-card/30 backdrop-blur-sm">
+      <div className="p-12 text-center">
+        <TypographyMuted>No projects found</TypographyMuted>
       </div>
-    </div>
+    </Card>
   );
 }
 
 export function ProjectList() {
   const { getProjects } = useCodecracyProgram();
+  const { data: projects, isLoading } = getProjects;
 
-  if (getProjects.isLoading) {
+  if (isLoading) {
     return <LoadingState />;
   }
-
-  if (getProjects.error) {
-    return (
-      <div className="text-center p-8 text-red-600">
-        Error loading projects. Please try again.
-      </div>
-    );
-  }
-
-  const projects = getProjects.data || [];
 
   if (!projects || projects.length === 0) {
     return <EmptyState />;
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {projects.map((project) => (
-        <ProjectCard
-          key={project?.pubkey.toBase58()}
-          project={project as Project}
-        />
+    <motion.div
+      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {(projects as Project[]).map((project) => (
+        <motion.div key={project.pubkey.toBase58()} variants={itemVariants}>
+          <ProjectCard
+            title={project.projectName}
+            githubHandle={project.githubHandle}
+            projectName={project.projectName}
+            memberCount={project.teamAddresses.length}
+            projectAddress={project.pubkey.toBase58()}
+          />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
