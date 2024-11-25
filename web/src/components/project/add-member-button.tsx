@@ -148,11 +148,12 @@ export function AddMemberButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           disabled={!isAdmin}
-          className="p-0"
           aria-label="Add team member"
+          className="flex items-center gap-2"
         >
+          <span>Add Member</span>
           <CirclePlusIcon className="w-5 h-5" />
         </Button>
       </DialogTrigger>

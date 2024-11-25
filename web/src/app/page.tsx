@@ -45,7 +45,7 @@ export default function Dashboard() {
         animate="visible"
       >
         <motion.header
-          className="relative flex items-center mb-10 pb-6"
+          className="relative flex items-center justify-between mb-10 pb-6"
           variants={itemVariants}
         >
           <div className="group relative">

@@ -143,7 +143,8 @@ export function CreateProjectButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button>
+          <span>Create Project</span>
           <CirclePlusIcon className="w-20 h-20" />
         </Button>
       </DialogTrigger>
