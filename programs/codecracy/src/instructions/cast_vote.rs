@@ -18,6 +18,7 @@ pub struct CastVote<'info> {
 
     // The poll account
     #[account(
+        mut,
         constraint = poll.project == project.key() @CastVoteError::InvalidProject,
         constraint = poll.user == poll_initializor_member.member_pubkey.key() @CastVoteError::InvalidPoll,
     )]

@@ -1,5 +1,6 @@
 import { BN } from "@coral-xyz/anchor";
 import { AddressLookupTableProgram, PublicKey } from "@solana/web3.js";
+import { CODECRACY_PROGRAM_ID } from "./program-export";
 
 const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
@@ -48,6 +49,11 @@ export function getPollPda(
     project.toBuffer(),
   ];
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
+}
+
+export function getVotePda(poll: PublicKey, user: PublicKey) {
+  const seeds = [Buffer.from("vote"), poll.toBuffer(), user.toBuffer()];
+  return PublicKey.findProgramAddressSync(seeds, CODECRACY_PROGRAM_ID)[0];
 }
 
 export function deriveLookupTableAddress(authority: PublicKey, slot: BN) {

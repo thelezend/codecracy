@@ -86,6 +86,7 @@ export type Codecracy = {
         },
         {
           name: "poll";
+          writable: true;
         },
         {
           name: "vote";

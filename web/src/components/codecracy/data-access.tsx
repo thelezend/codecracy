@@ -6,6 +6,7 @@ import {
   getPollPda,
   getProjectPda,
   getVaultPda,
+  getVotePda,
 } from "@/components/codecracy/pdas";
 import {
   CODECRACY_PROGRAM_ID,
@@ -387,6 +388,61 @@ export function useCodecracyProgram() {
     });
   };
 
+  const useGetMember = (projectAddress: PublicKey, user: PublicKey) => {
+    const memberStatePda = getMemberPda(
+      projectAddress,
+      user,
+      CODECRACY_PROGRAM_ID
+    );
+    return useQuery({
+      queryKey: ["codecracy", "member", projectAddress, user],
+      queryFn: async () => await program.account.member.fetch(memberStatePda),
+    });
+  };
+
+  const useCastVote = (projectAddress: PublicKey) => {
+    const getPollsList = useGetPollsList(projectAddress.toBase58());
+    return useMutation({
+      mutationKey: ["codecracy", "castVote", network, projectAddress],
+      mutationFn: async ({
+        pollAddress,
+        voteType,
+      }: {
+        pollAddress: PublicKey;
+        voteType: (typeof VoteTypes)[keyof typeof VoteTypes];
+      }) => {
+        if (!userWallet) return;
+
+        const pollData = await program.account.poll.fetch(pollAddress);
+        const votePda = getVotePda(pollAddress, userWallet.publicKey);
+        const pollInitializorMember = getMemberPda(
+          projectAddress,
+          pollData.user,
+          CODECRACY_PROGRAM_ID
+        );
+
+        return await program.methods
+          .castVote(voteType)
+          .accountsStrict({
+            project: projectAddress,
+            voter: userWallet.publicKey,
+            poll: pollAddress,
+            vote: votePda,
+            systemProgram: SystemProgram.programId,
+            pollInitializorMember,
+          })
+          .rpc();
+      },
+      onSuccess: (tx) => {
+        console.log("Vote cast successfully:", tx);
+        return getPollsList.refetch();
+      },
+      onError: (error) => {
+        console.error("Error casting vote:", error);
+      },
+    });
+  };
+
   return {
     program,
     CODECRACY_PROGRAM_ID,
@@ -402,6 +458,8 @@ export function useCodecracyProgram() {
     useClaim,
     useCloseProject,
     useCreatePoll,
+    useGetMember,
+    useCastVote,
   };
 }
 
@@ -416,3 +474,10 @@ export interface Project {
   bump: number;
   vaultBump: number;
 }
+
+export const VoteTypes = {
+  Low: { low: {} },
+  Medium: { medium: {} },
+  High: { high: {} },
+  Reject: { reject: {} },
+} as const;

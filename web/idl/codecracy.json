@@ -106,7 +106,8 @@
           "writable": true
         },
         {
-          "name": "poll"
+          "name": "poll",
+          "writable": true
         },
         {
           "name": "vote",
