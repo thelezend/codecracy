@@ -23,7 +23,7 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAnchorProvider, useNetwork } from "../solana/solana-provider";
 
 export function useCodecracyProgram() {
@@ -180,18 +180,20 @@ export function useCodecracyProgram() {
     });
   };
 
-  const useAddMember = () => {
-    const queryClient = useQueryClient();
+  const useAddMember = (project: PublicKey) => {
+    const getTeamMembers = useGetMembers([
+      {
+        memcmp: { offset: 8, bytes: project.toBase58() },
+      },
+    ]);
 
     return useMutation({
-      mutationKey: ["codecracy", "addMember", network],
+      mutationKey: ["codecracy", "addMember", network, project.toBase58()],
       mutationFn: async ({
         githubHandle,
-        project,
         newUser,
       }: {
         githubHandle: string;
-        project: PublicKey;
         newUser: PublicKey;
       }) => {
         if (!userWallet) return;
@@ -217,25 +219,9 @@ export function useCodecracyProgram() {
       onMutate: (variables) => {
         return variables;
       },
-      onSuccess: (tx, { project }) => {
+      onSuccess: (tx) => {
         console.log(tx);
-        const filters = [
-          {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: project.toBase58(),
-            },
-          },
-        ];
-        queryClient.invalidateQueries({
-          queryKey: [
-            "codecracy",
-            "members",
-            network,
-            userWallet?.publicKey.toBase58(),
-            filters,
-          ],
-        });
+        return getTeamMembers.refetch();
       },
     });
   };

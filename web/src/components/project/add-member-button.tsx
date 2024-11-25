@@ -132,7 +132,7 @@ export function AddMemberButton({
   const [open, setOpen] = useState(false);
   const { publicKey } = useWallet();
   const { useAddMember, useGetProject } = useCodecracyProgram();
-  const addMember = useAddMember();
+  const addMember = useAddMember(new PublicKey(projectAddress));
   const project = useGetProject(projectAddress);
 
   const isAdmin = publicKey?.equals(project.data?.admin as PublicKey);
@@ -140,7 +140,6 @@ export function AddMemberButton({
   const handleSubmit = async (values: AddMemberFormValues) => {
     try {
       await addMember.mutateAsync({
-        project: new PublicKey(projectAddress),
         newUser: new PublicKey(values.memberAddress),
         ...values,
       });
