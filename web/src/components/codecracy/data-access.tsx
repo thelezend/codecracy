@@ -3,6 +3,7 @@
 import {
   deriveLookupTableAddress,
   getMemberPda,
+  getPollPda,
   getProjectPda,
   getVaultPda,
 } from "@/components/codecracy/pdas";
@@ -30,6 +31,10 @@ export function useCodecracyProgram() {
   const { network } = useNetwork();
   const provider = useAnchorProvider();
   const program = getCodecracyProgram(provider);
+
+  if (!userWallet) {
+    throw new Error("Wallet not connected");
+  }
 
   const getProjects = useQuery({
     queryKey: [
@@ -290,6 +295,98 @@ export function useCodecracyProgram() {
     });
   };
 
+  const useClaim = (
+    projectAddress: PublicKey,
+    memberStateAddress: PublicKey
+  ) => {
+    return useMutation({
+      mutationKey: [
+        "codecracy",
+        "claim",
+        network,
+        projectAddress,
+        memberStateAddress,
+      ],
+      mutationFn: async () => {
+        if (!userWallet) return;
+
+        let projectState = await program.account.project.fetch(projectAddress);
+        let memberState = await program.account.member.fetch(
+          memberStateAddress
+        );
+        // TODO: Complete claim transaction
+      },
+    });
+  };
+
+  const useCloseProject = (projectAddress: PublicKey) => {
+    const vault = getVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
+    const getProject = useGetProject(projectAddress.toBase58());
+
+    return useMutation({
+      mutationKey: ["codecracy", "closeProject", network, projectAddress],
+      mutationFn: async () => {
+        if (!userWallet) return;
+
+        const tx = await program.methods
+          .closeProject()
+          .accountsStrict({
+            vault,
+            admin: userWallet.publicKey,
+            project: projectAddress,
+          })
+          .rpc();
+        return tx;
+      },
+      onSuccess: (tx) => {
+        console.log(tx);
+        return getProject.refetch();
+      },
+    });
+  };
+
+  const useCreatePoll = (projectAddress: PublicKey) => {
+    const getPollsList = useGetPollsList(projectAddress.toBase58());
+
+    return useMutation({
+      mutationKey: ["codecracy", "createPoll", network, projectAddress],
+      mutationFn: async ({
+        pullRequest,
+        closeTime,
+      }: {
+        pullRequest: number;
+        closeTime: number;
+      }) => {
+        if (!userWallet) return;
+        const memberPda = getMemberPda(
+          projectAddress,
+          userWallet.publicKey,
+          CODECRACY_PROGRAM_ID
+        );
+        const pollPda = getPollPda(
+          pullRequest,
+          projectAddress,
+          CODECRACY_PROGRAM_ID
+        );
+
+        return await program.methods
+          .startPoll(pullRequest, new BN(closeTime))
+          .accountsStrict({
+            project: projectAddress,
+            member: memberPda,
+            poll: pollPda,
+            user: userWallet.publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+      },
+      onSuccess: (tx) => {
+        console.log(tx);
+        return getPollsList.refetch();
+      },
+    });
+  };
+
   return {
     program,
     CODECRACY_PROGRAM_ID,
@@ -302,6 +399,9 @@ export function useCodecracyProgram() {
     useGetPollsList,
     useGetVaultBalance,
     useAddFunds,
+    useClaim,
+    useCloseProject,
+    useCreatePoll,
   };
 }
 

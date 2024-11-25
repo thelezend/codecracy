@@ -21,23 +21,30 @@ interface ClaimFundsButtonProps {
 export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
   const [open, setOpen] = useState(false);
   const { publicKey: userWallet } = useWallet();
-  const { useGetMembers } = useCodecracyProgram();
+  const { useGetMembers, useGetProject } = useCodecracyProgram();
+  const { data: projectData } = useGetProject(projectAddress);
   const getMembers = useGetMembers([
     {
       memcmp: { offset: 8, bytes: projectAddress },
     },
   ]);
 
-  if (!userWallet) return;
+  if (!userWallet || !getMembers.data) return;
 
-  const userScore = getMembers.data?.find((member) =>
+  const userMember = getMembers.data.find((member) =>
     member.account.memberPubkey.equals(userWallet)
-  )?.account.score;
-
-  const totalScore = getMembers.data?.reduce(
-    (sum, member) => sum.add(member.account.score),
-    new BN(0)
   );
+
+  if (!userMember || !projectData) return null;
+
+  const userScore = userMember.account.score.toNumber();
+  const totalScore = getMembers.data.reduce(
+    (sum, member) => sum + member.account.score.toNumber(),
+    0
+  );
+
+  const ratio = userScore / totalScore;
+  const userClaimableFunds = projectData.claimableFunds.toNumber() * ratio;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

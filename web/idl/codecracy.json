@@ -204,6 +204,27 @@
         {
           "name": "project",
           "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
         }
       ],
       "args": []
@@ -633,6 +654,10 @@
               "Lookup table for team members"
             ],
             "type": "pubkey"
+          },
+          {
+            "name": "claimable_funds",
+            "type": "u64"
           },
           {
             "name": "bump",

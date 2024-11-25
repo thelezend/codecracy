@@ -10,13 +10,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Github } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Github, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
 import { useNetwork } from "../solana/solana-provider";
 import { TypographyH3 } from "../typography/h3";
 import { TypographyMuted } from "../typography/muted";
+import { CreatePollButton } from "./create-poll-button";
 
 // Poll Link Component
 function PollLink({
@@ -75,14 +82,11 @@ function LoadingState() {
 // Empty State Component
 function EmptyState() {
   return (
-    <div className="space-y-4">
-      <TypographyH3>Polls</TypographyH3>
-      <Card>
-        <CardContent className="py-8 text-center">
-          <TypographyMuted>No polls found</TypographyMuted>
-        </CardContent>
-      </Card>
-    </div>
+    <Card>
+      <CardContent className="py-8 text-center">
+        <TypographyMuted>No polls found</TypographyMuted>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -100,12 +104,51 @@ export function PollsList({ projectAddress }: { projectAddress: string }) {
   }
 
   if (!polls || polls.length === 0) {
-    return <EmptyState />;
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <TypographyH3>Polls</TypographyH3>
+          <div className="flex items-center gap-2">
+            <CreatePollButton projectAddress={projectAddress} />
+            {project && !project.isActive && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Polls cannot be created for inactive projects</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        </div>
+        <EmptyState />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      <TypographyH3>Polls</TypographyH3>
+      <div className="flex justify-between items-center">
+        <TypographyH3>Polls</TypographyH3>
+        <div className="flex items-center gap-2">
+          <CreatePollButton projectAddress={projectAddress} />
+          {project && !project.isActive && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Polls cannot be created for inactive projects</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      </div>
       {polls.map((poll) => (
         <Card key={poll.publicKey.toBase58()}>
           <CardHeader>

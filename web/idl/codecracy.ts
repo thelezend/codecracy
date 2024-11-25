@@ -156,6 +156,21 @@ export type Codecracy = {
         {
           name: "project";
           writable: true;
+        },
+        {
+          name: "vault";
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [118, 97, 117, 108, 116];
+              },
+              {
+                kind: "account";
+                path: "project";
+              }
+            ];
+          };
         }
       ];
       args: [];
@@ -487,6 +502,10 @@ export type Codecracy = {
             name: "teamLut";
             docs: ["Lookup table for team members"];
             type: "pubkey";
+          },
+          {
+            name: "claimableFunds";
+            type: "u64";
           },
           {
             name: "bump";

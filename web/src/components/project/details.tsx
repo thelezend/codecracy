@@ -1,5 +1,6 @@
 "use client";
 
+import { useWallet } from "@solana/wallet-adapter-react";
 import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,10 +8,17 @@ import { useCodecracyProgram } from "../codecracy/data-access";
 import { useNetwork } from "../solana/solana-provider";
 import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { AddFundsButton } from "./add-funds-button";
 import { ClaimFundsButton } from "./claim-funds-button";
+import { CloseProjectButton } from "./close-project-button";
 
 // Address Link Component
 function AddressLink({
@@ -122,9 +130,13 @@ export default function ProjectDetails({
   projectAddress: string;
 }) {
   const { useGetProject, useGetVaultBalance } = useCodecracyProgram();
+  const { publicKey: userWallet } = useWallet();
   const { network } = useNetwork();
   const project = useGetProject(projectAddress);
   const vaultBalance = useGetVaultBalance(projectAddress);
+
+  if (!userWallet) return null;
+  const isAdmin = project.data?.admin.equals(userWallet);
 
   if (project.isLoading) {
     return <LoadingState />;
@@ -189,12 +201,12 @@ export default function ProjectDetails({
           <DetailRow label="Claimable Funds">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">
-                {vaultBalance.isLoading ? (
+                {project.isLoading ? (
                   <Skeleton className="h-4 w-20" />
-                ) : vaultBalance.error ? (
+                ) : project.error ? (
                   "Error loading balance"
                 ) : (
-                  `${(vaultBalance.data || 0) / 1e9} SOL`
+                  `${(project.data.claimableFunds.toNumber() || 0) / 1e9} SOL`
                 )}
               </span>
               <ClaimFundsButton projectAddress={projectAddress} />
@@ -202,6 +214,11 @@ export default function ProjectDetails({
           </DetailRow>
         )}
       </CardContent>
+      {project.data.isActive && isAdmin && (
+        <CardFooter>
+          <CloseProjectButton projectAddress={projectAddress} />
+        </CardFooter>
+      )}
     </Card>
   );
 }
