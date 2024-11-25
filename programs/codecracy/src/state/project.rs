@@ -13,6 +13,9 @@ pub struct Project {
     /// Lookup table for team members
     pub team_lut: Pubkey,
 
+    // Claimable funds
+    pub claimable_funds: u64,
+
     /// PDA bump seed for account derivation
     pub bump: u8,
 

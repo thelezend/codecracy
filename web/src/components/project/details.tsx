@@ -1,18 +1,16 @@
 "use client";
 
-import { PublicKey } from "@solana/web3.js";
 import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
-import { getVaultPda } from "../codecracy/pdas";
-import { CODECRACY_PROGRAM_ID } from "../codecracy/program-export";
 import { useNetwork } from "../solana/solana-provider";
 import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { AddFundsButton } from "./add-funds-button";
+import { ClaimFundsButton } from "./claim-funds-button";
 
 // Address Link Component
 function AddressLink({
@@ -123,15 +121,10 @@ export default function ProjectDetails({
 }: {
   projectAddress: string;
 }) {
-  const { useGetProject, useGetSolBalance } = useCodecracyProgram();
+  const { useGetProject, useGetVaultBalance } = useCodecracyProgram();
   const { network } = useNetwork();
   const project = useGetProject(projectAddress);
-
-  const vaultPda = getVaultPda(
-    new PublicKey(projectAddress),
-    CODECRACY_PROGRAM_ID
-  );
-  const vaultBalance = useGetSolBalance(vaultPda.toBase58());
+  const vaultBalance = useGetVaultBalance(projectAddress);
 
   if (project.isLoading) {
     return <LoadingState />;
@@ -177,20 +170,37 @@ export default function ProjectDetails({
           </div>
         </DetailRow>
 
-        <DetailRow label="Funds">
-          <div className="flex items-center gap-2">
-            <AddFundsButton projectAddress={vaultPda.toBase58()} />
-            <span className="text-sm font-medium">
-              {vaultBalance.isLoading ? (
-                <Skeleton className="h-4 w-20" />
-              ) : vaultBalance.error ? (
-                "Error loading balance"
-              ) : (
-                `${(vaultBalance.data || 0) / 1e9} SOL`
-              )}
-            </span>
-          </div>
-        </DetailRow>
+        {project.data.isActive ? (
+          <DetailRow label="Funds Locked">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">
+                {vaultBalance.isLoading ? (
+                  <Skeleton className="h-4 w-20" />
+                ) : vaultBalance.error ? (
+                  "Error loading balance"
+                ) : (
+                  `${(vaultBalance.data || 0) / 1e9} SOL`
+                )}
+              </span>
+              <AddFundsButton projectAddress={projectAddress} />
+            </div>
+          </DetailRow>
+        ) : (
+          <DetailRow label="Claimable Funds">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">
+                {vaultBalance.isLoading ? (
+                  <Skeleton className="h-4 w-20" />
+                ) : vaultBalance.error ? (
+                  "Error loading balance"
+                ) : (
+                  `${(vaultBalance.data || 0) / 1e9} SOL`
+                )}
+              </span>
+              <ClaimFundsButton projectAddress={projectAddress} />
+            </div>
+          </DetailRow>
+        )}
       </CardContent>
     </Card>
   );

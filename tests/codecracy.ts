@@ -1,8 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
-import { web3 } from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
-import { Codecracy } from "../target/types/codecracy";
+import { Program, web3 } from "@coral-xyz/anchor";
 import { assert } from "chai";
+import { Codecracy } from "../target/types/codecracy";
 
 const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
@@ -70,15 +69,14 @@ describe("codecracy", () => {
       .rpc({ skipPreflight: true });
 
     let projectData = await program.account.project.fetch(project);
-    assert.deepEqual(projectData, {
-      admin: admin.publicKey,
-      projectName,
-      githubHandle,
-      teamLut,
-      isActive: true,
-      bump: projectBump,
-      vaultBump,
-    });
+    assert.equal(projectData.admin.toBase58(), admin.publicKey.toBase58());
+    assert.equal(projectData.projectName, projectName);
+    assert.equal(projectData.githubHandle, githubHandle);
+    assert.equal(projectData.teamLut.toBase58(), teamLut.toBase58());
+    assert.isTrue(projectData.isActive);
+    assert.isTrue(projectData.claimableFunds.eq(new anchor.BN(0)));
+    assert.equal(projectData.bump, projectBump);
+    assert.equal(projectData.vaultBump, vaultBump);
   });
 
   it("Fail on hacker project initialization", async () => {
@@ -349,6 +347,7 @@ describe("codecracy", () => {
       .accountsStrict({
         admin: admin.publicKey,
         project,
+        vault,
       })
       .rpc();
 
@@ -365,6 +364,7 @@ describe("codecracy", () => {
         .accountsStrict({
           admin: hacker.publicKey,
           project,
+          vault,
         })
         .signers([hacker])
         .rpc();

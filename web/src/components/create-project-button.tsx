@@ -50,6 +50,7 @@ function useProjectForm() {
   const onSubmit = async (values: ProjectFormValues) => {
     try {
       await createProject.mutateAsync(values);
+      form.reset();
       return true;
     } catch (error) {
       console.error("Failed to create project:", error);

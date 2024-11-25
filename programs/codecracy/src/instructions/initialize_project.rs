@@ -83,6 +83,7 @@ impl<'info> InitializeProject<'info> {
         project.project_name = project_name;
         project.github_handle = github_handle;
         project.is_active = true;
+        project.claimable_funds = 0;
         project.bump = bumps.project;
         project.vault_bump = bumps.vault;
 

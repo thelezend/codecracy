@@ -249,17 +249,18 @@ export function useCodecracyProgram() {
       },
     });
 
-  const useGetSolBalance = (address: string) =>
-    useQuery({
-      queryKey: ["codecracy", "solBalance", network, address],
-      queryFn: async () => {
-        return await connection.getBalance(new PublicKey(address));
-      },
+  const useGetVaultBalance = (projectAddress: string) => {
+    const vault = getVaultPda(new PublicKey(projectAddress), program.programId);
+
+    return useQuery({
+      queryKey: ["codecracy", "vaultBalance", network, projectAddress],
+      queryFn: async () => await connection.getBalance(vault),
     });
+  };
 
   const useAddFunds = (projectAddress: string) => {
     const vault = getVaultPda(new PublicKey(projectAddress), program.programId);
-    const vaultBalance = useGetSolBalance(vault.toBase58());
+    const vaultBalance = useGetVaultBalance(projectAddress);
 
     return useMutation({
       mutationKey: ["codecracy", "addFunds", network, projectAddress],
@@ -299,7 +300,7 @@ export function useCodecracyProgram() {
     useFetchLookupTableAddresses,
     useAddMember,
     useGetPollsList,
-    useGetSolBalance,
+    useGetVaultBalance,
     useAddFunds,
   };
 }
