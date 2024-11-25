@@ -20,10 +20,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { CirclePlusIcon } from "lucide-react";
+import { CirclePlusIcon, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -145,30 +151,47 @@ export function AddMemberButton({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          disabled={!isAdmin}
-          aria-label="Add team member"
-          className="flex items-center gap-2"
-        >
-          <span>Add Member</span>
-          <CirclePlusIcon className="w-5 h-5" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Member</DialogTitle>
-          <DialogDescription>
-            Enter the details for your new team member.
-          </DialogDescription>
-        </DialogHeader>
-        <AddMemberForm
-          onSubmit={handleSubmit}
-          isLoading={addMember.isPending}
-        />
-      </DialogContent>
-    </Dialog>
+    <div className="flex items-center gap-2">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            disabled={!isAdmin}
+            aria-label="Add team member"
+            className="flex items-center gap-2"
+          >
+            <span>Add Member</span>
+            <CirclePlusIcon className="w-5 h-5" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Member</DialogTitle>
+            <DialogDescription>
+              Enter the details for your new team member.
+            </DialogDescription>
+          </DialogHeader>
+          <AddMemberForm
+            onSubmit={handleSubmit}
+            isLoading={addMember.isPending}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {!isAdmin && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="text-yellow-500/70 hover:text-yellow-500 transition-colors">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Only project admin can add new team members</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </div>
   );
 }

@@ -15,8 +15,11 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   AddressLookupTableProgram,
   GetProgramAccountsFilter,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
+  TransactionMessage,
+  VersionedTransaction,
 } from "@solana/web3.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAnchorProvider, useNetwork } from "../solana/solana-provider";
@@ -246,6 +249,46 @@ export function useCodecracyProgram() {
       },
     });
 
+  const useGetSolBalance = (address: string) =>
+    useQuery({
+      queryKey: ["codecracy", "solBalance", network, address],
+      queryFn: async () => {
+        return await connection.getBalance(new PublicKey(address));
+      },
+    });
+
+  const useAddFunds = (projectAddress: string) => {
+    const vault = getVaultPda(new PublicKey(projectAddress), program.programId);
+    const vaultBalance = useGetSolBalance(vault.toBase58());
+
+    return useMutation({
+      mutationKey: ["codecracy", "addFunds", network, projectAddress],
+      mutationFn: async (solAmount: number) => {
+        if (!userWallet) return;
+
+        const versionedTx = new VersionedTransaction(
+          new TransactionMessage({
+            payerKey: userWallet.publicKey,
+            recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
+            instructions: [
+              SystemProgram.transfer({
+                fromPubkey: userWallet.publicKey,
+                toPubkey: vault,
+                lamports: solAmount * LAMPORTS_PER_SOL,
+              }),
+            ],
+          }).compileToV0Message()
+        );
+
+        return await provider.sendAndConfirm(versionedTx);
+      },
+      onSuccess: (tx) => {
+        console.log(tx);
+        return vaultBalance.refetch();
+      },
+    });
+  };
+
   return {
     program,
     CODECRACY_PROGRAM_ID,
@@ -256,6 +299,8 @@ export function useCodecracyProgram() {
     useFetchLookupTableAddresses,
     useAddMember,
     useGetPollsList,
+    useGetSolBalance,
+    useAddFunds,
   };
 }
 

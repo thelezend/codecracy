@@ -1,14 +1,18 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { PublicKey } from "@solana/web3.js";
+import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
+import { getVaultPda } from "../codecracy/pdas";
+import { CODECRACY_PROGRAM_ID } from "../codecracy/program-export";
 import { useNetwork } from "../solana/solana-provider";
 import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
+import { AddFundsButton } from "./add-funds-button";
 
 // Address Link Component
 function AddressLink({
@@ -119,9 +123,15 @@ export default function ProjectDetails({
 }: {
   projectAddress: string;
 }) {
-  const { useGetProject } = useCodecracyProgram();
+  const { useGetProject, useGetSolBalance } = useCodecracyProgram();
   const { network } = useNetwork();
   const project = useGetProject(projectAddress);
+
+  const vaultPda = getVaultPda(
+    new PublicKey(projectAddress),
+    CODECRACY_PROGRAM_ID
+  );
+  const vaultBalance = useGetSolBalance(vaultPda.toBase58());
 
   if (project.isLoading) {
     return <LoadingState />;
@@ -131,21 +141,25 @@ export default function ProjectDetails({
     return <ErrorState />;
   }
 
-  const admin = project.data.admin.toBase58();
-
   return (
     <Card className="relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm transition-colors hover:bg-card/50 hover:border-border group">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Details</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Info className="w-4 h-4" />
+          Project Details
+        </CardTitle>
       </CardHeader>
-      <CardContent className="relative space-y-4">
+      <CardContent className="space-y-4">
         <DetailRow label="Project">
           <AddressLink address={projectAddress} network={network} />
         </DetailRow>
 
         <DetailRow label="Admin">
-          <AddressLink address={admin} network={network} />
+          <AddressLink
+            address={project.data.admin.toBase58()}
+            network={network}
+          />
         </DetailRow>
 
         <DetailRow label="Active">
@@ -159,6 +173,21 @@ export default function ProjectDetails({
             />
             <span className="text-sm font-medium">
               {project.data.isActive ? "Yes" : "No"}
+            </span>
+          </div>
+        </DetailRow>
+
+        <DetailRow label="Funds">
+          <div className="flex items-center gap-2">
+            <AddFundsButton projectAddress={vaultPda.toBase58()} />
+            <span className="text-sm font-medium">
+              {vaultBalance.isLoading ? (
+                <Skeleton className="h-4 w-20" />
+              ) : vaultBalance.error ? (
+                "Error loading balance"
+              ) : (
+                `${(vaultBalance.data || 0) / 1e9} SOL`
+              )}
             </span>
           </div>
         </DetailRow>

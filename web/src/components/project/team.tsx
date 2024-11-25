@@ -26,7 +26,7 @@ function MemberLink({ githubHandle }: { githubHandle: string }) {
         asChild
         variant="ghost"
         size="icon"
-        className="relative group/github h-7 w-7 rounded-lg transition-colors hover:text-primary"
+        className="relative group/github h-7 w-7 rounded-lg transition-colors hover:text-primary p-4"
       >
         <Link
           href={`https://github.com/${githubHandle}`}
@@ -216,7 +216,7 @@ export default function ProjectTeam({
             },
           }}
         >
-          {teamMembers.data.map((member) => (
+          {teamMembers.data.slice(0, 5).map((member) => (
             <motion.li
               key={member.publicKey.toBase58()}
               className="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-primary/5"
@@ -229,6 +229,16 @@ export default function ProjectTeam({
               />
             </motion.li>
           ))}
+          {teamMembers.data.length > 5 && (
+            <motion.li
+              variants={memberVariants}
+              className="flex items-center justify-center pt-2 border-t border-border/50"
+            >
+              <TypographyMuted className="text-sm">
+                +{teamMembers.data.length - 5} more team members
+              </TypographyMuted>
+            </motion.li>
+          )}
         </motion.ul>
       </CardContent>
     </Card>
