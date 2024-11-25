@@ -1,13 +1,118 @@
 "use client";
 
+import { Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
 import { useNetwork } from "../solana/solana-provider";
+import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 import { AddMemberButton } from "./add-member-button";
-import { Github } from "lucide-react";
+
+// Team Member Link Component
+function MemberLink({ githubHandle }: { githubHandle: string }) {
+  return (
+    <div className="flex items-center gap-1">
+      <span>{githubHandle}</span>
+      <Button asChild variant="link" className="p-0 h-auto">
+        <Link
+          href={`https://github.com/${githubHandle}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View ${githubHandle} on GitHub`}
+        >
+          <Github className="w-4 h-4" />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+// Member Address Link Component
+function MemberAddressLink({
+  address,
+  network,
+}: {
+  address: string;
+  network: string;
+}) {
+  const truncatedAddress = `${address.slice(0, 5)}...${address.slice(-4)}`;
+
+  return (
+    <div className="flex items-center gap-1">
+      <span className="font-mono">{truncatedAddress}</span>
+      <Button asChild variant="link" className="p-0 h-auto">
+        <Link
+          href={`https://explorer.solana.com/address/${address}?cluster=${network}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View ${truncatedAddress} on Solana Explorer`}
+        >
+          <Image
+            src="https://avatars.githubusercontent.com/u/92743431?s=200&v=4"
+            width={16}
+            height={16}
+            alt="Solana Explorer"
+            className="rounded-sm"
+          />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+// Loading State Component
+function LoadingState() {
+  return (
+    <Card className="mb-8 w-1/3">
+      <CardHeader>
+        <CardTitle>Team Members</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex justify-between items-center">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Error State Component
+function ErrorState() {
+  return (
+    <Card className="mb-8 w-1/3">
+      <CardHeader>
+        <CardTitle>Team Members</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <TypographyMuted>Failed to load team members</TypographyMuted>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Empty State Component
+function EmptyState({ projectAddress }: { projectAddress: string }) {
+  return (
+    <Card className="mb-8 w-1/3">
+      <CardHeader>
+        <CardTitle>
+          Team Members <AddMemberButton projectAddress={projectAddress} />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <TypographyMuted>No team members yet</TypographyMuted>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function ProjectTeam({
   projectAddress,
@@ -24,7 +129,15 @@ export default function ProjectTeam({
   ]);
 
   if (teamMembers.isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingState />;
+  }
+
+  if (teamMembers.error) {
+    return <ErrorState />;
+  }
+
+  if (!teamMembers.data || teamMembers.data.length === 0) {
+    return <EmptyState projectAddress={projectAddress} />;
   }
 
   return (
@@ -35,44 +148,17 @@ export default function ProjectTeam({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ul>
-          {teamMembers.data?.map((member) => (
+        <ul className="space-y-3">
+          {teamMembers.data.map((member) => (
             <li
               key={member.publicKey.toBase58()}
               className="flex items-center justify-between"
             >
-              <div className="flex items-center gap-1">
-                <span> {member.account.githubHandle}</span>
-                <Button asChild variant={"link"} className="p-0">
-                  <Link
-                    href={`https://github.com/${member.account.githubHandle}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github />
-                  </Link>
-                </Button>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="font-mono">
-                  {member.account.memberPubkey.toBase58().slice(0, 5)}...
-                  {member.account.memberPubkey.toBase58().slice(-4)}
-                </span>
-                <Button asChild variant={"link"} className="p-0">
-                  <Link
-                    href={`https://explorer.solana.com/address/${member.account.memberPubkey.toBase58()}?cluster=${network}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={`https://avatars.githubusercontent.com/u/92743431?s=200&v=4`}
-                      width={16}
-                      height={16}
-                      alt="Solscan Logo"
-                    />
-                  </Link>
-                </Button>
-              </div>
+              <MemberLink githubHandle={member.account.githubHandle} />
+              <MemberAddressLink
+                address={member.account.memberPubkey.toBase58()}
+                network={network}
+              />
             </li>
           ))}
         </ul>
