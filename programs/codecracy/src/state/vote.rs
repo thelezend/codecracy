@@ -15,5 +15,5 @@ pub enum VoteType {
     Low = 10,
     Medium = 20,
     High = 50,
-    Reject = -20,
+    Reject = 0,
 }

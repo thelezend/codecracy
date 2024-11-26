@@ -51,4 +51,8 @@ pub mod codecracy {
     pub fn close_project(ctx: Context<CloseProject>) -> Result<()> {
         ctx.accounts.close_project()
     }
+
+    pub fn claim(ctx: Context<Claim>) -> Result<()> {
+        ctx.accounts.claim(ctx.remaining_accounts)
+    }
 }

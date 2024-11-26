@@ -297,6 +297,9 @@ describe("codecracy", () => {
         pollInitializorMember: member1,
       })
       .rpc();
+
+    const member1Data = await program.account.member.fetch(member1);
+    assert.isTrue(member1Data.score.eq(new anchor.BN(20))); // 20 points for medium vote
   });
 
   it("Member removal", async () => {
@@ -342,6 +345,9 @@ describe("codecracy", () => {
   });
 
   it("Project closure", async () => {
+    // Airdrop funds to the vault
+    await airdropSol(provider.connection, vault);
+
     await program.methods
       .closeProject()
       .accountsStrict({
@@ -351,9 +357,11 @@ describe("codecracy", () => {
       })
       .rpc();
 
-    assert.isFalse(
-      (await program.account.project.fetch(project)).isActive,
-      "Project should be closed"
+    const projectData = await program.account.project.fetch(project);
+    assert.isFalse(projectData.isActive, "Project should be closed");
+    assert.isTrue(
+      projectData.claimableFunds.eq(new anchor.BN(10 * web3.LAMPORTS_PER_SOL)),
+      "Claimable funds should be equal to 10 SOL"
     );
   });
 
@@ -372,6 +380,49 @@ describe("codecracy", () => {
       const err = anchor.AnchorError.parse(_err.logs);
       assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
     }
+  });
+
+  it("Claim funds", async () => {
+    const lutAccount = (
+      await provider.connection.getAddressLookupTable(teamLut)
+    ).value;
+    const remaining_accounts = lutAccount.state.addresses.map((addr) => ({
+      pubkey: addr,
+      isSigner: false,
+      isWritable: false,
+    }));
+
+    const ix = await program.methods
+      .claim()
+      .accountsStrict({
+        vault,
+        member: member1,
+        project,
+        user: teamMember1.publicKey,
+        systemProgram: web3.SystemProgram.programId,
+      })
+      .remainingAccounts(remaining_accounts)
+      .instruction();
+
+    const versionedTx = new web3.VersionedTransaction(
+      new web3.TransactionMessage({
+        payerKey: teamMember1.publicKey,
+        recentBlockhash: (await provider.connection.getLatestBlockhash())
+          .blockhash,
+        instructions: [ix],
+      }).compileToV0Message([lutAccount])
+    );
+    versionedTx.sign([teamMember1]);
+    let tx = await provider.connection.sendTransaction(versionedTx, {
+      skipPreflight: true,
+    });
+    await provider.connection.confirmTransaction(tx, "confirmed");
+
+    const memberData = await program.account.member.fetch(member1);
+    assert.isTrue(memberData.fundsClaimed);
+
+    const projectData = await program.account.project.fetch(project);
+    assert.isTrue(projectData.claimableFunds.eq(new anchor.BN(0)));
   });
 
   it("Admin change", async () => {

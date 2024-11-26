@@ -43,4 +43,10 @@ pub enum ClaimError {
 
     #[msg("Funds have already been claimed")]
     FundsAlreadyClaimed,
+
+    #[msg("Total score of all members is 0")]
+    InsufficientTotalScore,
+
+    #[msg("Calculated claim amount is 0")]
+    InsufficientClaimAmount,
 }

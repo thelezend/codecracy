@@ -48,10 +48,16 @@ impl<'info> CastVote<'info> {
         }
 
         if vote_type == VoteType::Reject {
-            self.poll.rejections += 1;
+            self.poll.rejections = self.poll.rejections.checked_add(1).unwrap();
         }
-        self.poll_initializor_member.score += vote_type as i64;
-        self.poll.votes += 1;
+
+        self.poll_initializor_member.score = self
+            .poll_initializor_member
+            .score
+            .checked_add(vote_type as u64)
+            .unwrap();
+
+        self.poll.votes = self.poll.votes.checked_add(1).unwrap();
 
         self.vote.set_inner(Vote {
             voter: self.voter.key(),

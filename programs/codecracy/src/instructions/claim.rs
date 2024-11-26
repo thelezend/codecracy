@@ -9,6 +9,8 @@ use crate::{error::ClaimError, Member, Project, MEMBER_SEED, VAULT_SEED};
 pub struct Claim<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
+
+    #[account(mut)]
     pub project: Account<'info, Project>,
 
     #[account(
@@ -38,29 +40,60 @@ pub struct Claim<'info> {
 impl<'info> Claim<'info> {
     pub fn claim(&mut self, remaining_accounts: &[AccountInfo]) -> Result<()> {
         require!(!self.project.is_active, ClaimError::ProjectNotClosed);
-
         require!(!self.member.funds_claimed, ClaimError::FundsAlreadyClaimed);
-
         require!(self.member.score > 0, ClaimError::InsufficientScore);
 
-        let mut total_score = 0;
+        let mut total_score: u64 = 0;
         for member in remaining_accounts.iter() {
             let member_data = Member::try_deserialize(&mut member.try_borrow_data()?.as_ref())?;
-            total_score += member_data.score;
+            total_score = total_score.checked_add(member_data.score).unwrap();
         }
 
-        let percentage = self.member.score as f64 / total_score as f64;
-        let amount = (self.vault.lamports() as f64 * percentage) as u64;
+        require!(total_score > 0, ClaimError::InsufficientTotalScore);
+
+        // Calculate ratio as (member_score * PRECISION) / total_score
+        const PRECISION: u64 = 10000;
+        let ratio = (self.member.score as u128)
+            .checked_mul(PRECISION as u128)
+            .unwrap()
+            .checked_div(total_score as u128)
+            .unwrap();
+
+        // Calculate claim_amount as (claimable_funds * ratio) / PRECISION
+        let claim_amount = (self.project.claimable_funds as u128)
+            .checked_mul(ratio)
+            .unwrap()
+            .checked_div(PRECISION as u128)
+            .unwrap();
+
+        require!(claim_amount > 0, ClaimError::InsufficientClaimAmount);
+
+        let project_key = self.project.key();
+        let seeds = &[
+            &VAULT_SEED.as_bytes(),
+            project_key.as_ref(),
+            &[self.project.vault_bump],
+        ];
+        let signer_seeds = &[&seeds[..]];
 
         let transfer_accounts = Transfer {
             from: self.vault.to_account_info(),
             to: self.user.to_account_info(),
         };
-        let transfer_ctx =
-            CpiContext::new(self.system_program.to_account_info(), transfer_accounts);
-        transfer(transfer_ctx, amount)?;
+        let transfer_ctx = CpiContext::new_with_signer(
+            self.system_program.to_account_info(),
+            transfer_accounts,
+            signer_seeds,
+        );
+        transfer(transfer_ctx, claim_amount as u64)?;
 
+        self.project.claimable_funds = self
+            .project
+            .claimable_funds
+            .checked_sub(claim_amount as u64)
+            .unwrap();
         self.member.funds_claimed = true;
+
         Ok(())
     }
 }
