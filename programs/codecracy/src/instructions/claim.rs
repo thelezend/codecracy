@@ -40,7 +40,6 @@ impl<'info> Claim<'info> {
     pub fn claim(&mut self, remaining_accounts: &[AccountInfo]) -> Result<()> {
         require!(!self.project.is_active, ClaimError::ProjectNotClosed);
         require!(!self.member.funds_claimed, ClaimError::FundsAlreadyClaimed);
-        require!(self.member.score > 0, ClaimError::InsufficientScore);
 
         let mut total_score: u64 = 0;
         for member in remaining_accounts.iter() {
@@ -48,22 +47,28 @@ impl<'info> Claim<'info> {
             total_score = total_score.checked_add(member_data.score).unwrap();
         }
 
-        require!(total_score > 0, ClaimError::InsufficientTotalScore);
+        // Claim amount calculation needs to be optimized
+        let claim_amount;
 
-        // Calculate ratio as (member_score * PRECISION) / total_score
-        const PRECISION: u64 = 10000;
-        let ratio = (self.member.score as u128)
-            .checked_mul(PRECISION as u128)
-            .unwrap()
-            .checked_div(total_score as u128)
-            .unwrap();
+        if total_score == 0 {
+            // Calculate claim_amount as claimable_funds / number of members
+            claim_amount = self.project.claimable_funds as u128 / remaining_accounts.len() as u128;
+        } else {
+            // Calculate ratio as (member_score * PRECISION) / total_score
+            const PRECISION: u64 = 10000;
+            let ratio = (self.member.score as u128)
+                .checked_mul(PRECISION as u128)
+                .unwrap()
+                .checked_div(total_score as u128)
+                .unwrap();
 
-        // Calculate claim_amount as (claimable_funds * ratio) / PRECISION
-        let claim_amount = (self.project.claimable_funds as u128)
-            .checked_mul(ratio)
-            .unwrap()
-            .checked_div(PRECISION as u128)
-            .unwrap();
+            // Calculate claim_amount as (claimable_funds * ratio) / PRECISION
+            claim_amount = (self.project.claimable_funds as u128)
+                .checked_mul(ratio)
+                .unwrap()
+                .checked_div(PRECISION as u128)
+                .unwrap();
+        }
 
         require!(claim_amount > 0, ClaimError::InsufficientClaimAmount);
 

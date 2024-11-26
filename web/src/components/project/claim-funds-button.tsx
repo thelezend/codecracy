@@ -23,9 +23,10 @@ interface ClaimFundsButtonProps {
 const calculateClaimableFunds = (
   userScore: number,
   totalScore: number,
-  totalClaimableFunds: number
+  totalClaimableFunds: number,
+  membersLength: number
 ): number => {
-  if (totalScore === 0) return 0;
+  if (totalScore === 0) return totalClaimableFunds / membersLength;
   const ratio = userScore / totalScore;
   return totalClaimableFunds * ratio;
 };
@@ -78,7 +79,8 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
   const userClaimableFunds = calculateClaimableFunds(
     userScore,
     totalScore,
-    projectData.claimableFunds.toNumber()
+    projectData.claimableFunds.toNumber(),
+    members.length
   );
 
   // Handle claim funds action

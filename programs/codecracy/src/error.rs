@@ -41,14 +41,8 @@ pub enum ClaimError {
     #[msg("Project is not closed")]
     ProjectNotClosed,
 
-    #[msg("Member score is 0")]
-    InsufficientScore,
-
     #[msg("Funds have already been claimed")]
     FundsAlreadyClaimed,
-
-    #[msg("Total score of all members is 0")]
-    InsufficientTotalScore,
 
     #[msg("Calculated claim amount is 0")]
     InsufficientClaimAmount,
