@@ -29,6 +29,10 @@ The program utilizes Solana's Address Lookup Tables to efficiently manage team m
 - `cast_vote`: Cast a vote on an active poll
 - `claim`: Claim rewards based on contribution scores
 
+## Program State Accounts
+
+For a comprehensive list of all Program Derived Address (PDA) accounts used to store the program's state, please refer to the `state` directory in the Solana program code.
+
 ## Building and Testing
 
 To build and test the program, just use:
