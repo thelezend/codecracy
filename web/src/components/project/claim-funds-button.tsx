@@ -102,8 +102,9 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
         <DialogHeader>
           <DialogTitle>Claim Funds</DialogTitle>
           <DialogDescription>
-            You are eligible to claim {userClaimableFunds / LAMPORTS_PER_SOL}{" "}
-            SOL based on your contribution score. Would you like to proceed?
+            You are eligible to claim{" "}
+            {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL based on
+            your contribution score. Would you like to proceed?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

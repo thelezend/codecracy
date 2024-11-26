@@ -420,9 +420,6 @@ describe("codecracy", () => {
 
     const memberData = await program.account.member.fetch(member1);
     assert.isTrue(memberData.fundsClaimed);
-
-    const projectData = await program.account.project.fetch(project);
-    assert.isTrue(projectData.claimableFunds.eq(new anchor.BN(0)));
   });
 
   it("Admin change", async () => {

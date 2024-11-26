@@ -1,6 +1,7 @@
 "use client";
 
 import { useWallet } from "@solana/wallet-adapter-react";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -191,7 +192,9 @@ export default function ProjectDetails({
                 ) : vaultBalance.error ? (
                   "Error loading balance"
                 ) : (
-                  `${(vaultBalance.data || 0) / 1e9} SOL`
+                  `${((vaultBalance.data || 0) / LAMPORTS_PER_SOL).toFixed(
+                    2
+                  )} SOL`
                 )}
               </span>
               <AddFundsButton projectAddress={projectAddress} />
