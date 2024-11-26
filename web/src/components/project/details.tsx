@@ -198,15 +198,15 @@ export default function ProjectDetails({
             </div>
           </DetailRow>
         ) : (
-          <DetailRow label="Claimable Funds">
+          <DetailRow label="Vault Balance">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">
-                {project.isLoading ? (
+                {vaultBalance.isLoading ? (
                   <Skeleton className="h-4 w-20" />
-                ) : project.error ? (
+                ) : vaultBalance.error ? (
                   "Error loading balance"
                 ) : (
-                  `${(project.data.claimableFunds.toNumber() || 0) / 1e9} SOL`
+                  `${(vaultBalance.data || 0) / 1e9} SOL`
                 )}
               </span>
               <ClaimFundsButton projectAddress={projectAddress} />

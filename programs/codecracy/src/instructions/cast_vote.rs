@@ -25,7 +25,7 @@ pub struct CastVote<'info> {
     pub poll: Account<'info, Poll>,
 
     #[account(
-        init_if_needed,
+        init,
         payer = voter,
         space = Vote::INIT_SPACE + 8,
         seeds = [
@@ -42,6 +42,11 @@ pub struct CastVote<'info> {
 
 impl<'info> CastVote<'info> {
     pub fn cast_vote(&mut self, vote_type: VoteType) -> Result<()> {
+        // Check if the project is active
+        if !self.project.is_active {
+            return Err(CastVoteError::ProjectClosed.into());
+        }
+
         // Check if the voting period has ended
         if self.poll.close_time < Clock::get()?.unix_timestamp as u64 {
             return Err(CastVoteError::TimeExpired.into());

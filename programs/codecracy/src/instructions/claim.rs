@@ -10,7 +10,6 @@ pub struct Claim<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
-    #[account(mut)]
     pub project: Account<'info, Project>,
 
     #[account(
@@ -87,11 +86,6 @@ impl<'info> Claim<'info> {
         );
         transfer(transfer_ctx, claim_amount as u64)?;
 
-        self.project.claimable_funds = self
-            .project
-            .claimable_funds
-            .checked_sub(claim_amount as u64)
-            .unwrap();
         self.member.funds_claimed = true;
 
         Ok(())

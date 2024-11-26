@@ -286,6 +286,8 @@ export function useCodecracyProgram() {
     projectAddress: PublicKey,
     memberStateAddress: PublicKey
   ) => {
+    const getVaultBalance = useGetVaultBalance(projectAddress.toBase58());
+
     return useMutation({
       mutationKey: [
         "codecracy",
@@ -297,11 +299,53 @@ export function useCodecracyProgram() {
       mutationFn: async () => {
         if (!userWallet) return;
 
-        let projectState = await program.account.project.fetch(projectAddress);
-        let memberState = await program.account.member.fetch(
-          memberStateAddress
+        const projectState = await program.account.project.fetch(
+          projectAddress
         );
-        // TODO: Complete claim transaction
+        const lutAccount = (
+          await provider.connection.getAddressLookupTable(projectState.teamLut)
+        ).value;
+
+        if (!lutAccount) return;
+        const remaining_accounts = lutAccount.state.addresses.map((addr) => ({
+          pubkey: addr,
+          isSigner: false,
+          isWritable: false,
+        }));
+
+        const vault = getVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
+
+        const ix = await program.methods
+          .claim()
+          .accountsStrict({
+            vault,
+            member: memberStateAddress,
+            project: projectAddress,
+            user: userWallet.publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .remainingAccounts(remaining_accounts)
+          .instruction();
+
+        const versionedTx = new VersionedTransaction(
+          new TransactionMessage({
+            payerKey: userWallet.publicKey,
+            recentBlockhash: (await provider.connection.getLatestBlockhash())
+              .blockhash,
+            instructions: [ix],
+          }).compileToV0Message([lutAccount])
+        );
+        const signedTx = await userWallet.signTransaction(versionedTx);
+        const tx = await provider.connection.sendTransaction(signedTx);
+
+        return tx;
+      },
+      onError: (error) => {
+        console.error("Error claiming funds:", error);
+      },
+      onSuccess: (tx) => {
+        console.log(tx);
+        return getVaultBalance.refetch();
       },
     });
   };

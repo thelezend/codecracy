@@ -20,6 +20,9 @@ pub enum LookupTableError {
 
 #[error_code]
 pub enum CastVoteError {
+    #[msg("Project is not active")]
+    ProjectClosed,
+
     #[msg("The Poll account doesn't belong to the project")]
     InvalidProject,
 

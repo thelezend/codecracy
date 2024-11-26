@@ -145,6 +145,62 @@ export type Codecracy = {
       args: [];
     },
     {
+      name: "claim";
+      discriminator: [62, 198, 214, 193, 213, 159, 108, 210];
+      accounts: [
+        {
+          name: "user";
+          writable: true;
+          signer: true;
+        },
+        {
+          name: "project";
+          writable: true;
+        },
+        {
+          name: "member";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [109, 101, 109, 98, 101, 114];
+              },
+              {
+                kind: "account";
+                path: "project";
+              },
+              {
+                kind: "account";
+                path: "user";
+              }
+            ];
+          };
+        },
+        {
+          name: "vault";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [118, 97, 117, 108, 116];
+              },
+              {
+                kind: "account";
+                path: "project";
+              }
+            ];
+          };
+        },
+        {
+          name: "systemProgram";
+          address: "11111111111111111111111111111111";
+        }
+      ];
+      args: [];
+    },
+    {
       name: "closeProject";
       discriminator: [117, 209, 53, 106, 93, 55, 112, 49];
       accounts: [
@@ -435,7 +491,7 @@ export type Codecracy = {
           },
           {
             name: "score";
-            type: "i64";
+            type: "u64";
           },
           {
             name: "bump";

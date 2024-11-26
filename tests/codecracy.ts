@@ -414,7 +414,7 @@ describe("codecracy", () => {
     );
     versionedTx.sign([teamMember1]);
     let tx = await provider.connection.sendTransaction(versionedTx, {
-      skipPreflight: true,
+      preflightCommitment: "confirmed",
     });
     await provider.connection.confirmTransaction(tx, "confirmed");
 

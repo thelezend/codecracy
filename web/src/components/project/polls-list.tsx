@@ -187,7 +187,7 @@ const PollHeader: React.FC<PollHeaderProps> = ({
   </motion.div>
 );
 
-const PollCard: React.FC<PollCardProps> = ({ poll, project }) => {
+const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
   const closeDate = new Date(poll.account.closeTime.toNumber() * 1000);
   const isExpired = closeDate.getTime() < Date.now();
   const { publicKey: userWallet } = useWallet();
@@ -269,17 +269,26 @@ const PollCard: React.FC<PollCardProps> = ({ poll, project }) => {
             </div>
           </div>
           <div className="flex flex-col space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <h3 className="text-lg font-semibold">
-                  PR #{poll.account.pullRequest}
-                </h3>
-                {isCreator && (
-                  <span className="text-xs text-muted-foreground">
-                    (You created this poll)
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1 group">
+                <span className="text-xs text-muted-foreground">by</span>
+                <Link
+                  href={`https://github.com/${member.account.githubHandle}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary flex items-center space-x-1 transition-colors duration-200"
+                >
+                  <span className="group-hover:underline">
+                    {member.account.githubHandle}
                   </span>
-                )}
+                  <Github className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                </Link>
               </div>
+              {isCreator && (
+                <span className="text-xs text-muted-foreground">
+                  (You created this poll)
+                </span>
+              )}
             </div>
           </div>
         </CardContent>
