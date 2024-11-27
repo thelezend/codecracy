@@ -148,12 +148,12 @@ export default function ProjectDetails({
   }
 
   return (
-    <Card className="relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm transition-colors hover:bg-card/50 hover:border-border group">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+    <Card className="group relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm transition-colors hover:bg-card/50 hover:border-border">
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 via-pink-600/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Info className="w-4 h-4" />
-          Project Details
+          <Info className="w-5 h-5 text-primary" />
+          <span>Project Details</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -171,13 +171,17 @@ export default function ProjectDetails({
         <DetailRow label="Active">
           <div className="flex items-center gap-2">
             <div
-              className={`h-2 w-2 rounded-full ${
+              className={`h-2.5 w-2.5 rounded-full transition-all ${
                 project.data.isActive
-                  ? "bg-green-500 shadow-sm shadow-green-500/50"
-                  : "bg-red-500 shadow-sm shadow-red-500/50"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-500 shadow-md shadow-green-500/30"
+                  : "bg-gradient-to-r from-red-500 to-rose-500 shadow-md shadow-red-500/30"
               }`}
             />
-            <span className="text-sm font-medium">
+            <span
+              className={`text-sm font-medium ${
+                project.data.isActive ? "text-green-500" : "text-red-500"
+              }`}
+            >
               {project.data.isActive ? "Yes" : "No"}
             </span>
           </div>
@@ -186,7 +190,7 @@ export default function ProjectDetails({
         {project.data.isActive ? (
           <DetailRow label="Funds Locked">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">
+              <span className="font-mono text-sm font-medium">
                 {vaultBalance.isLoading ? (
                   <Skeleton className="h-4 w-20" />
                 ) : vaultBalance.error ? (
@@ -203,7 +207,7 @@ export default function ProjectDetails({
         ) : (
           <DetailRow label="Vault Balance">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">
+              <span className="font-mono text-sm font-medium">
                 {vaultBalance.isLoading ? (
                   <Skeleton className="h-4 w-20" />
                 ) : vaultBalance.error ? (

@@ -1,12 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github } from "lucide-react";
-import Image from "next/image";
+import { ArrowUpRight, Github } from "lucide-react";
 import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
 import { useNetwork } from "../solana/solana-provider";
-import { TypographyH2 } from "../typography/h2";
 import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
@@ -47,54 +45,43 @@ function ProjectHeader({
 }) {
   return (
     <motion.div
-      className="relative flex items-center gap-4 mb-8 pb-6"
+      className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8 pb-6"
       variants={itemVariants}
     >
-      <div className="flex-1">
-        <div className="group relative inline-block">
-          <div className="absolute -bottom-1.5 left-0 h-px w-full bg-gradient-to-r from-primary/70 via-primary/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-          <TypographyH2 className="relative font-extrabold text-foreground/90 tracking-tight transition-transform group-hover:text-foreground/100 group-hover:translate-y-[-2px]">
-            {projectName}
-          </TypographyH2>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <Button
-          asChild
-          variant="ghost"
-          size="icon"
-          className="relative group/github h-9 w-9 rounded-lg transition-colors hover:text-primary"
-        >
+      <motion.div
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        className="w-20 h-20 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center"
+      >
+        <Github className="w-10 h-10 text-primary" />
+      </motion.div>
+
+      <div className="flex-1 min-w-0">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
+          {projectName || <Skeleton className="w-48 h-8" />}
+        </h1>
+        {githubHandle && (
           <Link
             href={`https://github.com/${githubHandle}/${projectName}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="View on GitHub"
+            className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors mt-1"
           >
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-primary/10 to-primary/5 opacity-0 transition-opacity group-hover/github:opacity-100" />
-            <Github className="w-5 h-5 transition-transform group-hover/github:scale-110" />
+            {githubHandle}/{projectName}
+            <ArrowUpRight className="w-4 h-4" />
           </Link>
-        </Button>
-        <Button
-          asChild
-          variant="ghost"
-          size="icon"
-          className="relative group/solana h-9 w-9 rounded-lg transition-colors hover:text-primary"
-        >
+        )}
+      </div>
+
+      <div className="flex gap-2 self-end sm:self-center">
+        <Button variant="outline" asChild>
           <Link
             href={`https://explorer.solana.com/address/${projectAddress}?cluster=${network}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="View on Solana Explorer"
           >
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-primary/10 to-primary/5 opacity-0 transition-opacity group-hover/solana:opacity-100" />
-            <Image
-              src="https://avatars.githubusercontent.com/u/92743431?s=200&v=4"
-              width={20}
-              height={20}
-              alt="Solana Explorer"
-              className="rounded-sm transition-transform group-hover/solana:scale-110"
-            />
+            View on Explorer
           </Link>
         </Button>
       </div>
@@ -192,32 +179,31 @@ export default function Project({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
-      <motion.div
-        className="container mx-auto p-8 space-y-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <ProjectHeader
-          projectName={project.data.projectName}
-          githubHandle={project.data.githubHandle}
-          projectAddress={projectAddress}
-          network={network}
-        />
+    <motion.div
+      className="container py-8 space-y-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <ProjectHeader
+        projectName={project.data.projectName}
+        githubHandle={project.data.githubHandle}
+        projectAddress={projectAddress}
+        network={network}
+      />
 
-        <motion.div
-          variants={itemVariants}
-          className="grid gap-6 md:grid-cols-2"
-        >
+      <div className="grid gap-8 md:grid-cols-2">
+        <motion.div variants={itemVariants}>
           <ProjectDetails projectAddress={projectAddress} />
+        </motion.div>
+        <motion.div variants={itemVariants}>
           <ProjectTeam projectAddress={projectAddress} />
         </motion.div>
+      </div>
 
-        <motion.div variants={itemVariants}>
-          <PollsList projectAddress={projectAddress} />
-        </motion.div>
+      <motion.div variants={itemVariants}>
+        <PollsList projectAddress={projectAddress} />
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
