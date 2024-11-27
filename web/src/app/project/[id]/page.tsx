@@ -16,5 +16,9 @@ export default async function ProjectPage({
     notFound();
   }
 
-  return <Project projectAddress={project.toBase58()} />;
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-gray-50 dark:to-gray-900/50">
+      <Project projectAddress={project.toBase58()} />
+    </div>
+  );
 }
