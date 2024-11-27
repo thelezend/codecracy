@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { SolanaProvider } from "@/components/solana/solana-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({
             >
               <SiteHeader />
               {children}
+              <Toaster />
             </ThemeProvider>
           </SolanaProvider>
         </ReactQueryProvider>

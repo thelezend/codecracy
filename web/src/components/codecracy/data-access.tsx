@@ -25,6 +25,7 @@ import {
 } from "@solana/web3.js";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAnchorProvider, useNetwork } from "../solana/solana-provider";
+import { errorToast, successToast } from "./tx-toast";
 
 export function useCodecracyProgram() {
   const userWallet = useAnchorWallet();
@@ -154,8 +155,12 @@ export function useCodecracyProgram() {
       return tx;
     },
     onSuccess: (tx) => {
-      console.log(tx);
+      successToast(network, tx);
       return getProjects.refetch();
+    },
+    onError: (error) => {
+      errorToast();
+      console.error("Project creation failed", error);
     },
   });
 
@@ -216,12 +221,13 @@ export function useCodecracyProgram() {
           .rpc();
         return tx;
       },
-      onMutate: (variables) => {
-        return variables;
-      },
       onSuccess: (tx) => {
-        console.log(tx);
+        successToast(network, tx);
         return getTeamMembers.refetch();
+      },
+      onError: (error) => {
+        errorToast();
+        console.error("Error adding member:", error);
       },
     });
   };
@@ -276,8 +282,12 @@ export function useCodecracyProgram() {
         return await provider.sendAndConfirm(versionedTx);
       },
       onSuccess: (tx) => {
-        console.log(tx);
+        successToast(network, tx);
         return vaultBalance.refetch();
+      },
+      onError: (error) => {
+        errorToast();
+        console.error("Error adding funds:", error);
       },
     });
   };
@@ -341,10 +351,11 @@ export function useCodecracyProgram() {
         return tx;
       },
       onError: (error) => {
+        errorToast();
         console.error("Error claiming funds:", error);
       },
       onSuccess: (tx) => {
-        console.log(tx);
+        successToast(network, tx);
         return getVaultBalance.refetch();
       },
     });
@@ -370,8 +381,12 @@ export function useCodecracyProgram() {
         return tx;
       },
       onSuccess: (tx) => {
-        console.log(tx);
+        successToast(network, tx);
         return getProject.refetch();
+      },
+      onError: (error) => {
+        errorToast();
+        console.error("Error closing project:", error);
       },
     });
   };
@@ -412,8 +427,12 @@ export function useCodecracyProgram() {
           .rpc();
       },
       onSuccess: (tx) => {
-        console.log(tx);
+        successToast(network, tx);
         return getPollsList.refetch();
+      },
+      onError: (error) => {
+        errorToast();
+        console.error("Error creating poll:", error);
       },
     });
   };
@@ -464,10 +483,11 @@ export function useCodecracyProgram() {
           .rpc();
       },
       onSuccess: (tx) => {
-        console.log("Vote cast successfully:", tx);
+        successToast(network, tx);
         return getPollsList.refetch();
       },
       onError: (error) => {
+        errorToast();
         console.error("Error casting vote:", error);
       },
     });
