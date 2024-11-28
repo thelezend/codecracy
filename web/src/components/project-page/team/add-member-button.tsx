@@ -154,7 +154,6 @@ export function AddMemberButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            variant="outline"
             disabled={!isAdmin}
             aria-label="Add team member"
             className="flex items-center gap-2"

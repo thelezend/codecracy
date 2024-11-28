@@ -58,7 +58,7 @@ export function CloseProjectButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          variant="secondary"
           className="relative z-10"
           disabled={isDisabled}
         >

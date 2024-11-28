@@ -14,6 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../ui/tooltip";
+import { Info } from "lucide-react";
 
 interface ClaimFundsButtonProps {
   projectAddress: string;
@@ -89,24 +96,55 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
     setOpen(false);
   };
 
+  const getTooltipMessage = () => {
+    if (userMember.account.fundsClaimed) {
+      return "You have already claimed your funds for this project";
+    }
+    if (userClaimableFunds <= 0) {
+      return "No funds available to claim";
+    }
+    return null;
+  };
+
+  const tooltipMessage = getTooltipMessage();
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="relative z-10"
-          disabled={userClaimableFunds <= 0 || isClaimLoading}
-        >
-          {isClaimLoading ? "Claiming..." : "Claim"}
-        </Button>
-      </DialogTrigger>
+      <div className="flex items-center gap-2">
+        <DialogTrigger asChild>
+          <Button
+            className="relative z-10"
+            disabled={
+              userClaimableFunds <= 0 ||
+              isClaimLoading ||
+              userMember.account.fundsClaimed
+            }
+          >
+            {isClaimLoading ? "Claiming..." : "Claim"}
+          </Button>
+        </DialogTrigger>
+        {tooltipMessage && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-muted-foreground relative z-10" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{tooltipMessage}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Claim Funds</DialogTitle>
           <DialogDescription>
             You are eligible to claim{" "}
-            {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL based on
-            your contribution score. Would you like to proceed?
+            <span className="text-primary font-mono font-bold">
+              {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL
+            </span>{" "}
+            based on your contribution score. Would you like to proceed?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
