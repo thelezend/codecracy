@@ -1,10 +1,11 @@
 "use client";
 
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { Info } from "lucide-react";
 import { useState } from "react";
 import { useCodecracyProgram } from "../../codecracy/data-access";
-import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../ui/tooltip";
-import { Info } from "lucide-react";
 
 interface ClaimFundsButtonProps {
   projectAddress: string;
@@ -63,9 +63,9 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
   // Early return if data is loading or user is not connected
   if (isProjectLoading || isMembersLoading) {
     return (
-      <Button variant="outline" disabled>
+      <AnimatedButton variant="outline" disabled>
         Loading...
-      </Button>
+      </AnimatedButton>
     );
   }
 
@@ -112,7 +112,7 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-2">
         <DialogTrigger asChild>
-          <Button
+          <AnimatedButton
             className="relative z-10"
             disabled={
               userClaimableFunds <= 0 ||
@@ -121,7 +121,7 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
             }
           >
             {isClaimLoading ? "Claiming..." : "Claim"}
-          </Button>
+          </AnimatedButton>
         </DialogTrigger>
         {tooltipMessage && (
           <TooltipProvider>
@@ -148,16 +148,16 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button
+          <AnimatedButton
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={isClaimLoading}
           >
             Cancel
-          </Button>
-          <Button onClick={handleClaimFunds} disabled={isClaimLoading}>
+          </AnimatedButton>
+          <AnimatedButton onClick={handleClaimFunds} disabled={isClaimLoading}>
             {isClaimLoading ? "Claiming..." : "Confirm"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

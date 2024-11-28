@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { motion } from "framer-motion";
-import { ArrowRight, Code2, Coins, Users, Blocks } from "lucide-react";
+import { ArrowRight, Blocks, Code2, Coins, Users } from "lucide-react";
 import Link from "next/link";
 
 export function Hero() {
@@ -83,10 +83,10 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.8 }}
             >
               <Link href="/dashboard">
-                <Button size="lg" className="group">
+                <AnimatedButton size="lg" className="group">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </AnimatedButton>
               </Link>
             </motion.div>
           </motion.div>

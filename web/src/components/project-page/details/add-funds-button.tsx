@@ -1,7 +1,7 @@
 "use client";
 
 import { useCodecracyProgram } from "@/components/codecracy/data-access";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -72,9 +72,9 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="relative z-10">
+        <AnimatedButton variant="outline" className="relative z-10">
           Add Funds
-        </Button>
+        </AnimatedButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -117,9 +117,9 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={addFunds.isPending}>
+              <AnimatedButton type="submit" disabled={addFunds.isPending}>
                 {addFunds.isPending ? "Adding Funds..." : "Add Funds"}
-              </Button>
+              </AnimatedButton>
             </div>
           </form>
         </Form>

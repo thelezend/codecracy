@@ -4,7 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import { useCodecracyProgram } from "../../codecracy/data-access";
-import { Button } from "../../ui/button";
+import { AnimatedButton } from "../../ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -57,13 +57,13 @@ export function CloseProjectButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
+        <AnimatedButton
           variant="secondary"
           className="relative z-10"
           disabled={isDisabled}
         >
           {isClosing ? "Closing..." : "Close Project"}
-        </Button>
+        </AnimatedButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -74,20 +74,20 @@ export function CloseProjectButton({
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button
+          <AnimatedButton
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={isClosing}
           >
             Cancel
-          </Button>
-          <Button
+          </AnimatedButton>
+          <AnimatedButton
             variant="destructive"
             onClick={handleClose}
             disabled={isClosing}
           >
             {isClosing ? "Closing..." : "Close Project"}
-          </Button>
+          </AnimatedButton>
         </div>
       </DialogContent>
     </Dialog>

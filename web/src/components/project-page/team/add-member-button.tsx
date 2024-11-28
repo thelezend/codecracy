@@ -1,7 +1,7 @@
 "use client";
 
 import { useCodecracyProgram } from "@/components/codecracy/data-access";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -115,9 +115,9 @@ function AddMemberForm({
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={isLoading}>
+          <AnimatedButton type="submit" disabled={isLoading}>
             {isLoading ? "Adding..." : "Add"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </form>
     </Form>
@@ -153,14 +153,14 @@ export function AddMemberButton({
     <div className="flex items-center gap-2">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
+          <AnimatedButton
             disabled={!isAdmin}
             aria-label="Add team member"
             className="flex items-center gap-2"
           >
             <span>Add Member</span>
             <CirclePlusIcon className="w-5 h-5" />
-          </Button>
+          </AnimatedButton>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -97,9 +97,9 @@ function CreatePollForm({
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={isLoading}>
+          <AnimatedButton type="submit" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Poll"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </form>
     </Form>
@@ -146,7 +146,9 @@ export function CreatePollButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={!projectData?.isActive}>Create Poll</Button>
+        <AnimatedButton disabled={!projectData?.isActive}>
+          Create Poll
+        </AnimatedButton>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
