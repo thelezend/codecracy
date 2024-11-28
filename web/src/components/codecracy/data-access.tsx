@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  deriveLookupTableAddress,
-  getMemberPda,
-  getPollPda,
-  getProjectPda,
-  getVaultPda,
-  getVotePda,
-} from "@/components/codecracy/pdas";
-import {
   CODECRACY_PROGRAM_ID,
   getCodecracyProgram,
 } from "@/components/codecracy/program-export";
+import {
+  deriveLookupTableAddress,
+  deriveMemberPda,
+  derivePollPda,
+  deriveProjectPda,
+  deriveVaultPda,
+  deriveVotePda,
+} from "@/lib/pdas";
 import { BN } from "@coral-xyz/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
@@ -132,12 +132,12 @@ export function useCodecracyProgram() {
     }) => {
       if (!userWallet) return;
 
-      const project = getProjectPda(
+      const project = deriveProjectPda(
         projectName,
         githubHandle,
         program.programId
       );
-      const vault = getVaultPda(project, program.programId);
+      const vault = deriveVaultPda(project, program.programId);
       const slot = new BN(await connection.getSlot());
       const lookupTable = deriveLookupTableAddress(project, slot);
 
@@ -205,7 +205,7 @@ export function useCodecracyProgram() {
 
         const projectData = await program.account.project.fetch(project);
 
-        const member = getMemberPda(project, newUser, program.programId);
+        const member = deriveMemberPda(project, newUser, program.programId);
 
         const tx = await program.methods
           .addMember(githubHandle)
@@ -248,7 +248,10 @@ export function useCodecracyProgram() {
     });
 
   const useGetVaultBalance = (projectAddress: string) => {
-    const vault = getVaultPda(new PublicKey(projectAddress), program.programId);
+    const vault = deriveVaultPda(
+      new PublicKey(projectAddress),
+      program.programId
+    );
 
     return useQuery({
       queryKey: ["codecracy", "vaultBalance", network, projectAddress],
@@ -257,7 +260,10 @@ export function useCodecracyProgram() {
   };
 
   const useAddFunds = (projectAddress: string) => {
-    const vault = getVaultPda(new PublicKey(projectAddress), program.programId);
+    const vault = deriveVaultPda(
+      new PublicKey(projectAddress),
+      program.programId
+    );
     const vaultBalance = useGetVaultBalance(projectAddress);
 
     return useMutation({
@@ -323,7 +329,7 @@ export function useCodecracyProgram() {
           isWritable: false,
         }));
 
-        const vault = getVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
+        const vault = deriveVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
 
         const ix = await program.methods
           .claim()
@@ -345,24 +351,23 @@ export function useCodecracyProgram() {
             instructions: [ix],
           }).compileToV0Message([lutAccount])
         );
-        const signedTx = await userWallet.signTransaction(versionedTx);
-        const tx = await provider.connection.sendTransaction(signedTx);
+        const tx = await provider.sendAndConfirm(versionedTx);
 
         return tx;
-      },
-      onError: (error) => {
-        errorToast();
-        console.error("Error claiming funds:", error);
       },
       onSuccess: (tx) => {
         successToast(network, tx);
         return getVaultBalance.refetch();
       },
+      onError: (error) => {
+        errorToast();
+        console.error("Error claiming funds:", error);
+      },
     });
   };
 
   const useCloseProject = (projectAddress: PublicKey) => {
-    const vault = getVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
+    const vault = deriveVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
     const getProject = useGetProject(projectAddress.toBase58());
 
     return useMutation({
@@ -404,12 +409,12 @@ export function useCodecracyProgram() {
         closeTime: number;
       }) => {
         if (!userWallet) return;
-        const memberPda = getMemberPda(
+        const memberPda = deriveMemberPda(
           projectAddress,
           userWallet.publicKey,
           CODECRACY_PROGRAM_ID
         );
-        const pollPda = getPollPda(
+        const pollPda = derivePollPda(
           pullRequest,
           projectAddress,
           CODECRACY_PROGRAM_ID
@@ -438,7 +443,7 @@ export function useCodecracyProgram() {
   };
 
   const useGetMember = (projectAddress: PublicKey, user: PublicKey) => {
-    const memberStatePda = getMemberPda(
+    const memberStatePda = deriveMemberPda(
       projectAddress,
       user,
       CODECRACY_PROGRAM_ID
@@ -463,8 +468,8 @@ export function useCodecracyProgram() {
         if (!userWallet) return;
 
         const pollData = await program.account.poll.fetch(pollAddress);
-        const votePda = getVotePda(pollAddress, userWallet.publicKey);
-        const pollInitializorMember = getMemberPda(
+        const votePda = deriveVotePda(pollAddress, userWallet.publicKey);
+        const pollInitializorMember = deriveMemberPda(
           projectAddress,
           pollData.user,
           CODECRACY_PROGRAM_ID

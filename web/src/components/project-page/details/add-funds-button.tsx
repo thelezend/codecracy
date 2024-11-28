@@ -24,7 +24,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getVaultPda } from "../../codecracy/pdas";
+import { deriveVaultPda } from "../../../lib/pdas";
 import { CODECRACY_PROGRAM_ID } from "../../codecracy/program-export";
 
 const formSchema = z.object({
@@ -47,7 +47,7 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
   const [open, setOpen] = useState(false);
   const { useAddFunds } = useCodecracyProgram();
   const addFunds = useAddFunds(projectAddress);
-  const vault = getVaultPda(
+  const vault = deriveVaultPda(
     new PublicKey(projectAddress),
     CODECRACY_PROGRAM_ID
   );

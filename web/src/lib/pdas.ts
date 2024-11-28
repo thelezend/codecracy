@@ -1,13 +1,13 @@
 import { BN } from "@coral-xyz/anchor";
 import { AddressLookupTableProgram, PublicKey } from "@solana/web3.js";
-import { CODECRACY_PROGRAM_ID } from "./program-export";
+import { CODECRACY_PROGRAM_ID } from "../components/codecracy/program-export";
 
 const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
 const MEMBER_SEED = "member";
 const POLL_SEED = "poll";
 
-export function getProjectPda(
+export function deriveProjectPda(
   projectName: string,
   githubHandle: string,
   programId: PublicKey
@@ -20,12 +20,12 @@ export function getProjectPda(
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 
-export function getVaultPda(project: PublicKey, programId: PublicKey) {
+export function deriveVaultPda(project: PublicKey, programId: PublicKey) {
   const seeds = [Buffer.from(VAULT_SEED), project.toBuffer()];
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 
-export function getMemberPda(
+export function deriveMemberPda(
   project: PublicKey,
   memberPubkey: PublicKey,
   programId: PublicKey
@@ -38,7 +38,7 @@ export function getMemberPda(
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 
-export function getPollPda(
+export function derivePollPda(
   pull_request: number,
   project: PublicKey,
   programId: PublicKey
@@ -51,7 +51,7 @@ export function getPollPda(
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 
-export function getVotePda(poll: PublicKey, user: PublicKey) {
+export function deriveVotePda(poll: PublicKey, user: PublicKey) {
   const seeds = [Buffer.from("vote"), poll.toBuffer(), user.toBuffer()];
   return PublicKey.findProgramAddressSync(seeds, CODECRACY_PROGRAM_ID)[0];
 }
