@@ -8,9 +8,9 @@ import { useNetwork } from "../solana/solana-provider";
 import { TypographyMuted } from "../typography/muted";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
-import ProjectDetails from "./details";
-import { PollsList } from "./polls-list";
-import ProjectTeam from "./team";
+import ProjectDetails from "./details/details";
+import { PollsList } from "./polls/polls-list";
+import ProjectTeam from "./team/team";
 
 const containerVariants = {
   hidden: { opacity: 0 },

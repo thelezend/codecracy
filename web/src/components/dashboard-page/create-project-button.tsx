@@ -25,7 +25,7 @@ import { CirclePlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCodecracyProgram } from "./codecracy/data-access";
+import { useCodecracyProgram } from "../codecracy/data-access";
 
 // Types and Schema
 const projectFormSchema = z.object({

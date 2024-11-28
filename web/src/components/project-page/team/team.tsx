@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { useNetwork } from "../solana/solana-provider";
-import { TypographyMuted } from "../typography/muted";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { useNetwork } from "../../solana/solana-provider";
+import { TypographyMuted } from "../../typography/muted";
+import { Button } from "../../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Skeleton } from "../../ui/skeleton";
 import { AddMemberButton } from "./add-member-button";
 
 const memberVariants = {

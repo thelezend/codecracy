@@ -27,8 +27,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Github, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useNetwork } from "../solana/solana-provider";
-import { TypographyMuted } from "../typography/muted";
+import { useNetwork } from "../../solana/solana-provider";
+import { TypographyMuted } from "../../typography/muted";
 import { CreatePollButton } from "./create-poll-button";
 
 interface PollLinkProps {

@@ -1,4 +1,4 @@
-import Project from "@/components/project/project";
+import Project from "@/components/project-page/project";
 import { PublicKey } from "@solana/web3.js";
 import { notFound } from "next/navigation";
 

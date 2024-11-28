@@ -3,8 +3,8 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { Button } from "../ui/button";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 
 interface CloseProjectButtonProps {
   projectAddress: string;

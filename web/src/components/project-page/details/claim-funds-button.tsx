@@ -1,19 +1,19 @@
 "use client";
 
+import { useWallet } from "@solana/wallet-adapter-react";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useState } from "react";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { Button } from "../ui/button";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "../ui/dialog";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+} from "../../ui/dialog";
 
 interface ClaimFundsButtonProps {
   projectAddress: string;

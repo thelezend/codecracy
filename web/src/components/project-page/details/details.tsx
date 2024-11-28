@@ -5,18 +5,18 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { useNetwork } from "../solana/solana-provider";
-import { TypographyMuted } from "../typography/muted";
-import { Button } from "../ui/button";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { useNetwork } from "../../solana/solana-provider";
+import { TypographyMuted } from "../../typography/muted";
+import { Button } from "../../ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+} from "../../ui/card";
+import { Skeleton } from "../../ui/skeleton";
 import { AddFundsButton } from "./add-funds-button";
 import { ClaimFundsButton } from "./claim-funds-button";
 import { CloseProjectButton } from "./close-project-button";

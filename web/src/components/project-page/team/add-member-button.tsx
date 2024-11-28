@@ -1,5 +1,6 @@
 "use client";
 
+import { useCodecracyProgram } from "@/components/codecracy/data-access";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,7 +34,6 @@ import { CirclePlusIcon, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCodecracyProgram } from "../codecracy/data-access";
 
 // Form Schema
 const addMemberFormSchema = z.object({

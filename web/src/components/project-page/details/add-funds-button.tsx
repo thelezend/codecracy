@@ -24,8 +24,8 @@ import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getVaultPda } from "../codecracy/pdas";
-import { CODECRACY_PROGRAM_ID } from "../codecracy/program-export";
+import { getVaultPda } from "../../codecracy/pdas";
+import { CODECRACY_PROGRAM_ID } from "../../codecracy/program-export";
 
 const formSchema = z.object({
   solAmount: z

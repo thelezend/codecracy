@@ -24,7 +24,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCodecracyProgram } from "../codecracy/data-access";
+import { useCodecracyProgram } from "../../codecracy/data-access";
 
 // Poll Creation Form Component
 interface CreatePollFormValues {
