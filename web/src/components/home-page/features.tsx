@@ -23,6 +23,7 @@ import {
   Vote,
   Wallet,
 } from "lucide-react";
+import { AnimatedButton } from "../ui/animated-button";
 
 const container = {
   hidden: { opacity: 0 },
@@ -46,14 +47,18 @@ const features = [
         Pull Request Tracking
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              <Info className="h-4 w-4 text-muted-foreground" />
+            <TooltipTrigger asChild>
+              <AnimatedButton
+                variant="ghost"
+                size="icon"
+                className="h-4 w-4 text-muted-foreground"
+              >
+                <Info />
+              </AnimatedButton>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                GitHub integration coming soon. Currently requires manual PR ID
-                input.
-              </p>
+            <TooltipContent className="text-center">
+              <p>GitHub integration coming soon.</p>
+              <p>Currently requires manual PR ID input.</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
