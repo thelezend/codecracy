@@ -2,10 +2,13 @@
 
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Info } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NetworkSwitcher } from "./solana/network-switcher";
 import { WalletConnection } from "./solana/wallet-connection";
+import { AnimatedButton } from "./ui/animated-button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -48,6 +51,16 @@ export function SiteHeader() {
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <NetworkSwitcher />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <AnimatedButton variant="ghost" size="icon">
+                <Info />
+              </AnimatedButton>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Use Phantom wallet (recommended) and switch to Devnet mode.</p>
+            </TooltipContent>
+          </Tooltip>
           <WalletConnection />
         </div>
       </div>

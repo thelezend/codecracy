@@ -15,12 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 interface ClaimFundsButtonProps {
   projectAddress: string;
@@ -124,16 +119,14 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
           </AnimatedButton>
         </DialogTrigger>
         {tooltipMessage && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-4 w-4 text-muted-foreground relative z-10" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{tooltipMessage}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="h-4 w-4 text-muted-foreground relative z-10" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{tooltipMessage}</p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </div>
       <DialogContent className="sm:max-w-[425px]">

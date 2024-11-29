@@ -10,7 +10,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
@@ -45,23 +44,21 @@ const features = [
     title: (
       <div className="flex items-center gap-2">
         Pull Request Tracking
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <AnimatedButton
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <Info />
-              </AnimatedButton>
-            </TooltipTrigger>
-            <TooltipContent className="text-center">
-              <p>GitHub integration coming soon.</p>
-              <p>Currently requires manual PR ID input.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <AnimatedButton
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 text-muted-foreground"
+            >
+              <Info />
+            </AnimatedButton>
+          </TooltipTrigger>
+          <TooltipContent className="text-center">
+            <p>GitHub integration coming soon.</p>
+            <p>Currently requires manual PR ID input.</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     ),
     description:

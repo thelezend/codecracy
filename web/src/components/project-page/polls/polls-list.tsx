@@ -17,7 +17,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { BN } from "@coral-xyz/anchor";
@@ -172,18 +171,16 @@ const PollHeader: React.FC<PollHeaderProps> = ({
     <div className="flex items-center gap-2">
       <CreatePollButton projectAddress={projectAddress} />
       {!isProjectActive && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="p-2 rounded-lg hover:bg-primary/10 transition-colors">
-                <Info className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Polls cannot be created for inactive projects</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="p-2 rounded-lg hover:bg-primary/10 transition-colors">
+              <Info className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Polls cannot be created for inactive projects</p>
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   </div>

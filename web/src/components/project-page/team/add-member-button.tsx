@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -177,18 +176,16 @@ export function AddMemberButton({
       </Dialog>
 
       {!isAdmin && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="text-yellow-500/70 hover:text-yellow-500 transition-colors">
-                <ShieldAlert className="w-5 h-5" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Only project admin can add new team members</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="text-yellow-500/70 hover:text-yellow-500 transition-colors">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Only project admin can add new team members</p>
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   );
