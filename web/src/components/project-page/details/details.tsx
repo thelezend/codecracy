@@ -20,6 +20,7 @@ import { Skeleton } from "../../ui/skeleton";
 import { AddFundsButton } from "./add-funds-button";
 import { ClaimFundsButton } from "./claim-funds-button";
 import { CloseProjectButton } from "./close-project-button";
+import Scoreboard from "./scoreboard/scoreboard";
 
 // Address Link Component
 function AddressLink({
@@ -221,11 +222,12 @@ export default function ProjectDetails({
           </DetailRow>
         )}
       </CardContent>
-      {project.data.isActive && isAdmin && (
-        <CardFooter>
+      <CardFooter className="flex justify-between">
+        <Scoreboard projectAddress={projectAddress} />
+        {project.data.isActive && isAdmin && (
           <CloseProjectButton projectAddress={projectAddress} />
-        </CardFooter>
-      )}
+        )}
+      </CardFooter>
     </Card>
   );
 }
