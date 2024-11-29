@@ -62,7 +62,7 @@ const item = {
 
 export function TargetAudience() {
   return (
-    <section className="py-20">
+    <section className="py-20 min-h-screen">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <motion.h2
