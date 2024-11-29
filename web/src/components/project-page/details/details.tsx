@@ -1,25 +1,26 @@
 "use client";
 
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ArrowUpRight, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { useNetwork } from "../solana/solana-provider";
-import { TypographyMuted } from "../typography/muted";
-import { Button } from "../ui/button";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { useNetwork } from "../../solana/solana-provider";
+import { TypographyMuted } from "../../typography/muted";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+} from "../../ui/card";
+import { Skeleton } from "../../ui/skeleton";
 import { AddFundsButton } from "./add-funds-button";
 import { ClaimFundsButton } from "./claim-funds-button";
 import { CloseProjectButton } from "./close-project-button";
+import Scoreboard from "./scoreboard/scoreboard";
 
 // Address Link Component
 function AddressLink({
@@ -38,7 +39,7 @@ function AddressLink({
       <code className="relative rounded bg-muted px-[0.5rem] py-[0.25rem] font-mono text-sm">
         {truncatedAddress}
       </code>
-      <Button
+      <AnimatedButton
         asChild
         variant="ghost"
         size="icon"
@@ -62,7 +63,7 @@ function AddressLink({
             <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all group-hover/explorer:opacity-100" />
           </div>
         </Link>
-      </Button>
+      </AnimatedButton>
     </div>
   );
 }
@@ -112,13 +113,13 @@ function ErrorState() {
       <CardContent>
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <TypographyMuted>Failed to load project details</TypographyMuted>
-          <Button
+          <AnimatedButton
             variant="ghost"
             onClick={() => window.location.reload()}
             className="mt-4"
           >
             Try Again
-          </Button>
+          </AnimatedButton>
         </div>
       </CardContent>
     </Card>
@@ -221,11 +222,12 @@ export default function ProjectDetails({
           </DetailRow>
         )}
       </CardContent>
-      {project.data.isActive && isAdmin && (
-        <CardFooter>
+      <CardFooter className="flex justify-between">
+        <Scoreboard projectAddress={projectAddress} />
+        {project.data.isActive && isAdmin && (
           <CloseProjectButton projectAddress={projectAddress} />
-        </CardFooter>
-      )}
+        )}
+      </CardFooter>
     </Card>
   );
 }

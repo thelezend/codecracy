@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useCodecracyProgram } from "../codecracy/data-access";
 import { useNetwork } from "../solana/solana-provider";
 import { TypographyMuted } from "../typography/muted";
-import { Button } from "../ui/button";
+import { AnimatedButton } from "../ui/animated-button";
 import { Skeleton } from "../ui/skeleton";
-import ProjectDetails from "./details";
-import { PollsList } from "./polls-list";
-import ProjectTeam from "./team";
+import ProjectDetails from "./details/details";
+import { PollsList } from "./polls/polls-list";
+import ProjectTeam from "./team/team";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -75,7 +75,7 @@ function ProjectHeader({
       </div>
 
       <div className="flex gap-2 self-end sm:self-center">
-        <Button variant="outline" asChild>
+        <AnimatedButton variant="outline" asChild>
           <Link
             href={`https://explorer.solana.com/address/${projectAddress}?cluster=${network}`}
             target="_blank"
@@ -83,7 +83,7 @@ function ProjectHeader({
           >
             View on Explorer
           </Link>
-        </Button>
+        </AnimatedButton>
       </div>
     </motion.div>
   );
@@ -149,13 +149,13 @@ function ErrorState() {
         <TypographyMuted className="text-lg">
           Failed to load project details
         </TypographyMuted>
-        <Button
+        <AnimatedButton
           variant="ghost"
           onClick={() => window.location.reload()}
           className="mt-4"
         >
           Try Again
-        </Button>
+        </AnimatedButton>
       </motion.div>
     </div>
   );

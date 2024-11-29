@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { motion } from "framer-motion";
 import { Construction } from "lucide-react";
 import Link from "next/link";
@@ -35,9 +35,9 @@ export default function DocsPage() {
           transition={{ delay: 0.4 }}
         >
           <Link href="/">
-            <Button size="lg" className="mt-8">
+            <AnimatedButton size="lg" className="mt-8">
               Return Home
-            </Button>
+            </AnimatedButton>
           </Link>
         </motion.div>
       </motion.div>

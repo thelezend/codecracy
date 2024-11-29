@@ -1,19 +1,21 @@
 "use client";
 
+import { AnimatedButton } from "@/components/ui/animated-button";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { Info } from "lucide-react";
 import { useState } from "react";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { Button } from "../ui/button";
+import { useCodecracyProgram } from "../../codecracy/data-access";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "../ui/dialog";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+} from "../../ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
 interface ClaimFundsButtonProps {
   projectAddress: string;
@@ -56,9 +58,9 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
   // Early return if data is loading or user is not connected
   if (isProjectLoading || isMembersLoading) {
     return (
-      <Button variant="outline" disabled>
+      <AnimatedButton variant="outline" disabled>
         Loading...
-      </Button>
+      </AnimatedButton>
     );
   }
 
@@ -89,37 +91,66 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
     setOpen(false);
   };
 
+  const getTooltipMessage = () => {
+    if (userMember.account.fundsClaimed) {
+      return "You have already claimed your funds for this project";
+    }
+    if (userClaimableFunds <= 0) {
+      return "No funds available to claim";
+    }
+    return null;
+  };
+
+  const tooltipMessage = getTooltipMessage();
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="relative z-10"
-          disabled={userClaimableFunds <= 0 || isClaimLoading}
-        >
-          {isClaimLoading ? "Claiming..." : "Claim"}
-        </Button>
-      </DialogTrigger>
+      <div className="flex items-center gap-2">
+        <DialogTrigger asChild>
+          <AnimatedButton
+            className="relative z-10"
+            disabled={
+              userClaimableFunds <= 0 ||
+              isClaimLoading ||
+              userMember.account.fundsClaimed
+            }
+          >
+            {isClaimLoading ? "Claiming..." : "Claim"}
+          </AnimatedButton>
+        </DialogTrigger>
+        {tooltipMessage && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="h-4 w-4 text-muted-foreground relative z-10" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{tooltipMessage}</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Claim Funds</DialogTitle>
           <DialogDescription>
             You are eligible to claim{" "}
-            {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL based on
-            your contribution score. Would you like to proceed?
+            <span className="text-primary font-mono font-bold">
+              {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL
+            </span>{" "}
+            based on your contribution score. Would you like to proceed?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button
+          <AnimatedButton
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={isClaimLoading}
           >
             Cancel
-          </Button>
-          <Button onClick={handleClaimFunds} disabled={isClaimLoading}>
+          </AnimatedButton>
+          <AnimatedButton onClick={handleClaimFunds} disabled={isClaimLoading}>
             {isClaimLoading ? "Claiming..." : "Confirm"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SolanaProvider } from "@/components/solana/solana-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -40,9 +41,11 @@ export default function RootLayout({
               defaultTheme="dark"
               disableTransitionOnChange
             >
-              <SiteHeader />
-              {children}
-              <Toaster />
+              <TooltipProvider delayDuration={200}>
+                <SiteHeader />
+                {children}
+                <Toaster />
+              </TooltipProvider>
             </ThemeProvider>
           </SolanaProvider>
         </ReactQueryProvider>

@@ -1,13 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Github } from "lucide-react";
 import Image from "next/image";
@@ -54,29 +53,27 @@ export function Team() {
                   />
                 </div>
                 <ProfileData />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link
-                        href="https://github.com/thelezend"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="https://github.com/thelezend"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="mt-4 group hover:border-primary/50"
                       >
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className="mt-4 group hover:border-primary/50"
-                        >
-                          <Github className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                          View GitHub Profile
-                        </Button>
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Check out my other projects!</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                        <Github className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                        View GitHub Profile
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Check out my other projects!</p>
+                  </TooltipContent>
+                </Tooltip>
               </motion.div>
             </CardContent>
           </Card>

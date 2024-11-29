@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCodecracyProgram } from "../codecracy/data-access";
-import { useNetwork } from "../solana/solana-provider";
-import { TypographyMuted } from "../typography/muted";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import { useCodecracyProgram } from "../../codecracy/data-access";
+import { useNetwork } from "../../solana/solana-provider";
+import { TypographyMuted } from "../../typography/muted";
+import { AnimatedButton } from "../../ui/animated-button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Skeleton } from "../../ui/skeleton";
 import { AddMemberButton } from "./add-member-button";
 
 const memberVariants = {
@@ -22,7 +22,7 @@ function MemberLink({ githubHandle }: { githubHandle: string }) {
   return (
     <div className="flex items-center gap-2">
       <span className="font-medium text-sm">{githubHandle}</span>
-      <Button
+      <AnimatedButton
         asChild
         variant="ghost"
         size="icon"
@@ -40,7 +40,7 @@ function MemberLink({ githubHandle }: { githubHandle: string }) {
             <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all group-hover/github:opacity-100" />
           </div>
         </Link>
-      </Button>
+      </AnimatedButton>
     </div>
   );
 }
@@ -60,7 +60,7 @@ function MemberAddressLink({
       <code className="relative rounded bg-muted px-[0.5rem] py-[0.25rem] font-mono text-sm">
         {truncatedAddress}
       </code>
-      <Button
+      <AnimatedButton
         asChild
         variant="ghost"
         size="icon"
@@ -84,7 +84,7 @@ function MemberAddressLink({
             <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all group-hover/explorer:opacity-100" />
           </div>
         </Link>
-      </Button>
+      </AnimatedButton>
     </div>
   );
 }
@@ -126,13 +126,13 @@ function ErrorState() {
       <CardContent>
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <TypographyMuted>Failed to load team members</TypographyMuted>
-          <Button
+          <AnimatedButton
             variant="ghost"
             onClick={() => window.location.reload()}
             className="mt-4"
           >
             Try Again
-          </Button>
+          </AnimatedButton>
         </div>
       </CardContent>
     </Card>

@@ -1,7 +1,7 @@
 "use client";
 
-import { CreateProjectButton } from "@/components/create-project-button";
-import { ProjectList } from "@/components/project-list";
+import { CreateProjectButton } from "@/components/dashboard-page/create-project-button";
+import { ProjectList } from "@/components/dashboard-page/project-list";
 import { WalletPrompt } from "@/components/solana/wallet-prompt";
 import { TypographyH2 } from "@/components/typography/h2";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";

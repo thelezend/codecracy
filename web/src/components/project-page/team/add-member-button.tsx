@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useCodecracyProgram } from "@/components/codecracy/data-access";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,7 +33,6 @@ import { CirclePlusIcon, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCodecracyProgram } from "../codecracy/data-access";
 
 // Form Schema
 const addMemberFormSchema = z.object({
@@ -115,9 +114,9 @@ function AddMemberForm({
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={isLoading}>
+          <AnimatedButton type="submit" disabled={isLoading}>
             {isLoading ? "Adding..." : "Add"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </form>
     </Form>
@@ -153,15 +152,14 @@ export function AddMemberButton({
     <div className="flex items-center gap-2">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
+          <AnimatedButton
             disabled={!isAdmin}
             aria-label="Add team member"
             className="flex items-center gap-2"
           >
             <span>Add Member</span>
             <CirclePlusIcon className="w-5 h-5" />
-          </Button>
+          </AnimatedButton>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -178,18 +176,16 @@ export function AddMemberButton({
       </Dialog>
 
       {!isAdmin && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="text-yellow-500/70 hover:text-yellow-500 transition-colors">
-                <ShieldAlert className="w-5 h-5" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Only project admin can add new team members</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="text-yellow-500/70 hover:text-yellow-500 transition-colors">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Only project admin can add new team members</p>
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ import { CirclePlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCodecracyProgram } from "./codecracy/data-access";
+import { useCodecracyProgram } from "../codecracy/data-access";
 
 // Types and Schema
 const projectFormSchema = z.object({
@@ -119,9 +119,9 @@ function ProjectForm({
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={isLoading}>
+          <AnimatedButton type="submit" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create"}
-          </Button>
+          </AnimatedButton>
         </DialogFooter>
       </form>
     </Form>
@@ -130,6 +130,9 @@ function ProjectForm({
 
 // Main Component
 export function CreateProjectButton() {
+  const { getProjects } = useCodecracyProgram();
+  const { data: projects, isLoading: projectsLoading } = getProjects;
+
   const [open, setOpen] = useState(false);
   const { onSubmit, isLoading } = useProjectForm();
 
@@ -144,10 +147,15 @@ export function CreateProjectButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <AnimatedButton
+          shouldBounce={
+            !projectsLoading && (!projects || projects.length === 0)
+          }
+          className="relative"
+        >
           <span>Create Project</span>
-          <CirclePlusIcon className="w-20 h-20" />
-        </Button>
+          <CirclePlusIcon className="ml-2 h-4 w-4" />
+        </AnimatedButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

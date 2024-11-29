@@ -10,7 +10,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
@@ -23,6 +22,7 @@ import {
   Vote,
   Wallet,
 } from "lucide-react";
+import { AnimatedButton } from "../ui/animated-button";
 
 const container = {
   hidden: { opacity: 0 },
@@ -44,19 +44,21 @@ const features = [
     title: (
       <div className="flex items-center gap-2">
         Pull Request Tracking
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Info className="h-4 w-4 text-muted-foreground" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                GitHub integration coming soon. Currently requires manual PR ID
-                input.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <AnimatedButton
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 text-muted-foreground"
+            >
+              <Info />
+            </AnimatedButton>
+          </TooltipTrigger>
+          <TooltipContent className="text-center">
+            <p>GitHub integration coming soon.</p>
+            <p>Currently requires manual PR ID input.</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     ),
     description:
@@ -94,7 +96,7 @@ const features = [
 
 export function Features() {
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-20 bg-gray-50 dark:bg-gray-900/50 min-h-screen">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

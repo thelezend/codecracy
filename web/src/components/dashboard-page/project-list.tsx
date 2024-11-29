@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Project, useCodecracyProgram } from "./codecracy/data-access";
-import { ProjectCard } from "./project/project-card";
-import { TypographyMuted } from "./typography/muted";
-import { Card } from "./ui/card";
+import { Project, useCodecracyProgram } from "../codecracy/data-access";
+import { TypographyMuted } from "../typography/muted";
+import { Card } from "../ui/card";
+import { ProjectCard } from "./project-card";
 
 const containerVariants = {
   hidden: { opacity: 0 },

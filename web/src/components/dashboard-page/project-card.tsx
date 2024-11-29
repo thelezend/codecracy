@@ -1,7 +1,7 @@
 "use client";
 
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Users } from "lucide-react";
@@ -64,7 +64,7 @@ export function ProjectCard({
         </CardHeader>
 
         <CardFooter className="flex justify-end">
-          <Button
+          <AnimatedButton
             asChild
             variant="ghost"
             className="group/button relative overflow-hidden transition-colors hover:text-primary"
@@ -76,7 +76,7 @@ export function ProjectCard({
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 opacity-0 transition-opacity group-hover/button:opacity-100" />
             </Link>
-          </Button>
+          </AnimatedButton>
         </CardFooter>
       </Card>
     </motion.div>

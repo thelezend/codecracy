@@ -1,7 +1,7 @@
 "use client";
 
 import { useCodecracyProgram } from "@/components/codecracy/data-access";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import {
   Dialog,
   DialogContent,
@@ -24,8 +24,8 @@ import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getVaultPda } from "../codecracy/pdas";
-import { CODECRACY_PROGRAM_ID } from "../codecracy/program-export";
+import { deriveVaultPda } from "../../../lib/pdas";
+import { CODECRACY_PROGRAM_ID } from "../../codecracy/program-export";
 
 const formSchema = z.object({
   solAmount: z
@@ -47,7 +47,7 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
   const [open, setOpen] = useState(false);
   const { useAddFunds } = useCodecracyProgram();
   const addFunds = useAddFunds(projectAddress);
-  const vault = getVaultPda(
+  const vault = deriveVaultPda(
     new PublicKey(projectAddress),
     CODECRACY_PROGRAM_ID
   );
@@ -72,9 +72,9 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="relative z-10">
+        <AnimatedButton variant="outline" className="relative z-10">
           Add Funds
-        </Button>
+        </AnimatedButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -117,9 +117,9 @@ export function AddFundsButton({ projectAddress }: AddFundsButtonProps) {
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={addFunds.isPending}>
+              <AnimatedButton type="submit" disabled={addFunds.isPending}>
                 {addFunds.isPending ? "Adding Funds..." : "Add Funds"}
-              </Button>
+              </AnimatedButton>
             </div>
           </form>
         </Form>
