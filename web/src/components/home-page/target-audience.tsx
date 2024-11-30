@@ -8,9 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Building2, Code2, Users, Trophy, Gamepad } from "lucide-react";
-import { BackgroundGradient } from "../ui/background-gradient";
+import { Building2, Code2, Gamepad, Trophy, Users } from "lucide-react";
 import { AnimatedIcon } from "../ui/animated-icon";
+import { BackgroundGradient } from "../ui/background-gradient";
+import { ShootingStars } from "../ui/shooting-stars";
+import { StarsBackground } from "../ui/stars-background";
 
 const audiences = [
   {
@@ -62,7 +64,7 @@ const item = {
 
 export function TargetAudience() {
   return (
-    <section className="py-20 min-h-screen">
+    <section className="py-20 min-h-screen relative overflow-hidden">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <motion.h2
@@ -117,6 +119,9 @@ export function TargetAudience() {
           ))}
         </motion.div>
       </div>
+
+      <ShootingStars />
+      <StarsBackground />
     </section>
   );
 }
