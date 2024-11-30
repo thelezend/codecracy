@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { AnimatedButton } from "../ui/animated-button";
 import { AnimatedIcon } from "../ui/animated-icon";
+import { LampContainer } from "../ui/lamp";
 
 const container = {
   hidden: { opacity: 0 },
@@ -107,55 +108,60 @@ const features = [
 export function Features() {
   return (
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-900/30 min-h-screen relative overflow-hidden">
-      <div className="container px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.h2
+      <LampContainer>
+        <div className="container px-4 md:px-6">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+            className="text-center mb-16"
           >
-            Powerful Features for Modern Teams
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+            >
+              Powerful Features for Modern Teams
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl"
+            >
+              Everything you need to manage and reward code contributions
+              effectively
+            </motion.p>
+          </motion.div>
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            Everything you need to manage and reward code contributions
-            effectively
-          </motion.p>
-        </motion.div>
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {features.map((feature, index) => (
-            <motion.div key={index} variants={item}>
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-2 hover:rotate-1 h-full rounded-3xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800/50 border-opacity-50">
-                <CardHeader>
-                  <AnimatedIcon icon={feature.icon} containerClassName="mb-4" />
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* Add more content or links here if needed */}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+            {features.map((feature, index) => (
+              <motion.div key={index} variants={item}>
+                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-2 hover:rotate-1 h-full rounded-3xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800/50 border-opacity-50">
+                  <CardHeader>
+                    <AnimatedIcon
+                      icon={feature.icon}
+                      containerClassName="mb-4"
+                    />
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Add more content or links here if needed */}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </LampContainer>
     </section>
   );
 }
