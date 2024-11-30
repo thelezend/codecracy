@@ -16,13 +16,14 @@ import { motion } from "framer-motion";
 import {
   GitPullRequest,
   Info,
-  Shield,
   Sparkles,
   Users2,
   Vote,
   Wallet,
 } from "lucide-react";
 import { AnimatedButton } from "../ui/animated-button";
+import { AnimatedIcon } from "../ui/animated-icon";
+import { LampContainer } from "../ui/lamp";
 
 const container = {
   hidden: { opacity: 0 },
@@ -35,11 +36,30 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, scale: 0.9, x: -20 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+    },
+  },
 };
 
 const features = [
+  {
+    title: "Team Management",
+    description: "Efficient member management with Address Lookup Tables",
+    icon: Users2,
+  },
+  {
+    title: "Optional Fund Locking",
+    description:
+      "Lock funds in a secure vault to create incentives for your team (completely optional)",
+    icon: Wallet,
+  },
   {
     title: (
       <div className="flex items-center gap-2">
@@ -68,78 +88,80 @@ const features = [
   {
     title: "Democratic Voting",
     description:
-      "Fair and transparent voting system for contribution assessment",
+      "Team members vote on contributions to determine individual impact scores",
     icon: Vote,
+  },
+  {
+    title: "Impact Scoring",
+    description:
+      "Calculate contribution impact scores based on votes from other team members",
+    icon: Sparkles,
   },
   {
     title: "Claimable Rewards",
     description:
-      "Claim your rewards based on contribution scores after project completion",
+      "After project closure, each member can claim their share of locked funds based on their impact score",
     icon: Wallet,
-  },
-  {
-    title: "Secure Protocol",
-    description: "Built on Solana for maximum security and efficiency",
-    icon: Shield,
-  },
-  {
-    title: "Team Management",
-    description: "Efficient member management with Address Lookup Tables",
-    icon: Users2,
-  },
-  {
-    title: "Impact Scoring",
-    description: "Advanced algorithms to measure contribution impact",
-    icon: Sparkles,
   },
 ];
 
 export function Features() {
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900/50 min-h-screen">
-      <div className="container px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Powerful Features for Modern Teams
-          </h2>
-          <p className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl">
-            Everything you need to manage and reward code contributions
-            effectively
-          </p>
-        </motion.div>
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {features.map((feature, index) => (
-            <motion.div key={index} variants={item}>
-              <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                <CardHeader>
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    className="w-12 h-12 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-4"
-                  >
-                    <feature.icon className="h-6 w-6 text-primary" />
-                  </motion.div>
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* Add more content or links here if needed */}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+    <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-900/30 min-h-screen relative overflow-hidden">
+      <LampContainer>
+        <div className="container px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+            >
+              Powerful Features for Modern Teams
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="mt-4 text-gray-500 dark:text-gray-400 md:text-xl"
+            >
+              Everything you need to manage and reward code contributions
+              effectively
+            </motion.p>
+          </motion.div>
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {features.map((feature, index) => (
+              <motion.div key={index} variants={item}>
+                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-2 hover:rotate-1 h-full rounded-3xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800/50 border-opacity-50">
+                  <CardHeader>
+                    <AnimatedIcon
+                      icon={feature.icon}
+                      containerClassName="mb-4"
+                    />
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Add more content or links here if needed */}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </LampContainer>
     </section>
   );
 }

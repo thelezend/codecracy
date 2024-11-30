@@ -8,9 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Building2, Code2, Users, Trophy, Gamepad } from "lucide-react";
-import { BackgroundGradient } from "../ui/background-gradient";
+import { Building2, Code2, Gamepad, Trophy, Users } from "lucide-react";
 import { AnimatedIcon } from "../ui/animated-icon";
+import { ShootingStars } from "../ui/shooting-stars";
+import { StarsBackground } from "../ui/stars-background";
 
 const audiences = [
   {
@@ -62,14 +63,14 @@ const item = {
 
 export function TargetAudience() {
   return (
-    <section className="py-20 min-h-screen">
+    <section className="py-20 min-h-screen relative overflow-hidden">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient"
+            className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
           >
             Who is Codecracy For?
           </motion.h2>
@@ -93,30 +94,31 @@ export function TargetAudience() {
         >
           {audiences.map((audience, index) => (
             <motion.div key={index} variants={item}>
-              <BackgroundGradient>
-                <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 h-full rounded-3xl">
-                  <CardHeader>
-                    <AnimatedIcon
-                      icon={audience.icon}
-                      containerClassName="mb-4"
-                      size={24}
-                    />
-                    <CardTitle className="text-xl mb-2">
-                      {audience.title}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {audience.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {/* Room for additional content if needed */}
-                  </CardContent>
-                </Card>
-              </BackgroundGradient>
+              <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 h-full rounded-3xl bg-white/50 dark:bg-gray-900/30">
+                <CardHeader>
+                  <AnimatedIcon
+                    icon={audience.icon}
+                    containerClassName="mb-4"
+                    size={24}
+                  />
+                  <CardTitle className="text-xl mb-2">
+                    {audience.title}
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    {audience.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Room for additional content if needed */}
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </motion.div>
       </div>
+
+      <ShootingStars />
+      <StarsBackground />
     </section>
   );
 }
