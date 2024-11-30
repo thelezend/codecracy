@@ -1,12 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FlipWords } from "../ui/flip-words";
 
 type GitHubProfile = {
   name: string;
   login: string;
   avatar_url: string;
 };
+
+const words = [
+  "Solana Blockchain Developer",
+  "Full Stack Engineer",
+  "Part-time Degen",
+];
 
 export function ProfileData() {
   const [profile, setProfile] = useState<GitHubProfile | null>(null);
@@ -41,19 +48,15 @@ export function ProfileData() {
     return (
       <div className="space-y-2">
         <h3 className="text-2xl font-bold">theLezend</h3>
-        <p className="text-gray-500 dark:text-gray-400">
-          Solana Blockchain Developer, Full Stack Engineer & Part-time Degen
-        </p>
+        <FlipWords words={words} duration={1000} />
       </div>
     );
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <h3 className="text-2xl font-bold">{profile.name || profile.login}</h3>
-      <p className="text-gray-500 dark:text-gray-400">
-        Solana Blockchain Developer, Full Stack Engineer & Part-time Degen
-      </p>
+      <FlipWords words={words} duration={1000} />
     </div>
   );
 }

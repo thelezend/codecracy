@@ -12,11 +12,15 @@ import { Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ProfileData } from "./profile-data";
+import { WavyBackground } from "../ui/wavy-background";
 
 export function Team() {
   return (
-    <section className="py-24 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900/50">
-      <div className="container px-4 md:px-6">
+    <section className="py-24 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900/50 relative">
+      <div className="absolute inset-0 z-0">
+        <WavyBackground />
+      </div>
+      <div className="container px-4 md:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -1,8 +1,7 @@
-import { Hero } from "@/components/home-page/hero";
 import { Features } from "@/components/home-page/features";
-import { Explainer } from "@/components/home-page/explainer";
-import { Team } from "@/components/home-page/team";
+import { Hero } from "@/components/home-page/hero";
 import { TargetAudience } from "@/components/home-page/target-audience";
+import { Team } from "@/components/home-page/team";
 
 export default function HomePage() {
   return (
@@ -10,7 +9,7 @@ export default function HomePage() {
       <Hero />
       <TargetAudience />
       <Features />
-      <Explainer />
+      {/* <Explainer /> */}
       <Team />
     </main>
   );
