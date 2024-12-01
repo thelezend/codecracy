@@ -155,7 +155,6 @@ export type Codecracy = {
         },
         {
           name: "project";
-          writable: true;
         },
         {
           name: "member";
@@ -189,6 +188,33 @@ export type Codecracy = {
               {
                 kind: "account";
                 path: "project";
+              }
+            ];
+          };
+        },
+        {
+          name: "config";
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [99, 111, 110, 102, 105, 103];
+              }
+            ];
+          };
+        },
+        {
+          name: "protocolVault";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [118, 97, 117, 108, 116];
+              },
+              {
+                kind: "account";
+                path: "config";
               }
             ];
           };
@@ -228,6 +254,87 @@ export type Codecracy = {
               }
             ];
           };
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "editConfig";
+      discriminator: [244, 197, 215, 48, 246, 184, 210, 138];
+      accounts: [
+        {
+          name: "admin";
+          writable: true;
+          signer: true;
+          relations: ["config"];
+        },
+        {
+          name: "config";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [99, 111, 110, 102, 105, 103];
+              }
+            ];
+          };
+        }
+      ];
+      args: [
+        {
+          name: "newAdmin";
+          type: {
+            option: "pubkey";
+          };
+        },
+        {
+          name: "feeBasisPoints";
+          type: {
+            option: "u16";
+          };
+        }
+      ];
+    },
+    {
+      name: "initializeConfig";
+      discriminator: [208, 127, 21, 1, 194, 190, 196, 70];
+      accounts: [
+        {
+          name: "admin";
+          writable: true;
+          signer: true;
+        },
+        {
+          name: "config";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [99, 111, 110, 102, 105, 103];
+              }
+            ];
+          };
+        },
+        {
+          name: "vault";
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [118, 97, 117, 108, 116];
+              },
+              {
+                kind: "account";
+                path: "config";
+              }
+            ];
+          };
+        },
+        {
+          name: "systemProgram";
+          address: "11111111111111111111111111111111";
         }
       ];
       args: [];
@@ -439,6 +546,10 @@ export type Codecracy = {
   ];
   accounts: [
     {
+      name: "config";
+      discriminator: [155, 12, 170, 224, 30, 250, 204, 130];
+    },
+    {
       name: "member";
       discriminator: [54, 19, 162, 21, 29, 166, 17, 198];
     },
@@ -468,6 +579,34 @@ export type Codecracy = {
     }
   ];
   types: [
+    {
+      name: "config";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "admin";
+            type: "pubkey";
+          },
+          {
+            name: "vault";
+            type: "pubkey";
+          },
+          {
+            name: "feeBasisPoints";
+            type: "u16";
+          },
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "vaultBump";
+            type: "u8";
+          }
+        ];
+      };
+    },
     {
       name: "member";
       type: {
@@ -639,6 +778,11 @@ export type Codecracy = {
     }
   ];
   constants: [
+    {
+      name: "configSeed";
+      type: "string";
+      value: '"config"';
+    },
     {
       name: "memberSeed";
       type: "string";

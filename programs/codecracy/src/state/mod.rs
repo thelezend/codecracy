@@ -9,3 +9,6 @@ pub use poll::*;
 
 pub mod vote;
 pub use vote::*;
+
+pub mod config;
+pub use config::*;

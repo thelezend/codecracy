@@ -5,6 +5,7 @@ import {
   getCodecracyProgram,
 } from "@/components/codecracy/program-export";
 import {
+  deriveConfigPda,
   deriveLookupTableAddress,
   deriveMemberPda,
   derivePollPda,
@@ -330,10 +331,14 @@ export function useCodecracyProgram() {
         }));
 
         const vault = deriveVaultPda(projectAddress, CODECRACY_PROGRAM_ID);
+        const config = deriveConfigPda(CODECRACY_PROGRAM_ID);
+        const protocolVault = deriveVaultPda(config, CODECRACY_PROGRAM_ID);
 
         const ix = await program.methods
           .claim()
           .accountsStrict({
+            config,
+            protocolVault,
             vault,
             member: memberStateAddress,
             project: projectAddress,
@@ -454,12 +459,22 @@ export function useCodecracyProgram() {
     });
   };
 
-  const useCastVote = (projectAddress: PublicKey) => {
+  const useCastVote = (projectAddress: PublicKey, pollAddress: PublicKey) => {
     const getPollsList = useGetPollsList(projectAddress.toBase58());
+    const getVote = useGetVote(pollAddress);
+    const getMembers = useGetMembers([
+      { memcmp: { offset: 8, bytes: projectAddress.toBase58() } },
+    ]);
+
     return useMutation({
-      mutationKey: ["codecracy", "castVote", network, projectAddress],
-      mutationFn: async ({
+      mutationKey: [
+        "codecracy",
+        "castVote",
+        network,
+        projectAddress,
         pollAddress,
+      ],
+      mutationFn: async ({
         voteType,
       }: {
         pollAddress: PublicKey;
@@ -489,12 +504,22 @@ export function useCodecracyProgram() {
       },
       onSuccess: (tx) => {
         successToast(network, tx);
-        return getPollsList.refetch();
+        getPollsList.refetch();
+        getVote.refetch();
+        return getMembers.refetch();
       },
       onError: (error) => {
         errorToast();
         console.error("Error casting vote:", error);
       },
+    });
+  };
+
+  const useGetVote = (pollAddress: PublicKey) => {
+    const votePda = deriveVotePda(pollAddress, userWallet.publicKey);
+    return useQuery({
+      queryKey: ["codecracy", "vote", pollAddress, userWallet],
+      queryFn: async () => await program.account.vote.fetch(votePda),
     });
   };
 
@@ -515,6 +540,7 @@ export function useCodecracyProgram() {
     useCreatePoll,
     useGetMember,
     useCastVote,
+    useGetVote,
   };
 }
 

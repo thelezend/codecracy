@@ -21,3 +21,9 @@ pub use cast_vote::*;
 
 pub mod claim;
 pub use claim::*;
+
+pub mod initialize_config;
+pub use initialize_config::*;
+
+pub mod edit_config;
+pub use edit_config::*;

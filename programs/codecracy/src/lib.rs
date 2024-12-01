@@ -16,6 +16,18 @@ pub mod codecracy {
 
     use super::*;
 
+    pub fn initialize_config(ctx: Context<InitializeConfig>) -> Result<()> {
+        ctx.accounts.init_config(&ctx.bumps)
+    }
+
+    pub fn edit_config(
+        ctx: Context<EditConfig>,
+        new_admin: Option<Pubkey>,
+        fee_basis_points: Option<u16>,
+    ) -> Result<()> {
+        ctx.accounts.edit_config(new_admin, fee_basis_points)
+    }
+
     pub fn initialize_project(
         ctx: Context<InitializeProject>,
         project_name: String,
