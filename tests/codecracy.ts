@@ -75,7 +75,7 @@ describe("codecracy", () => {
 
   it("Edit config", async () => {
     await program.methods
-      .editConfig(null, 4000)
+      .editConfig(null, 300)
       .accountsStrict({
         admin: admin.publicKey,
         config,
@@ -436,6 +436,13 @@ describe("codecracy", () => {
   });
 
   it("Claim funds", async () => {
+    const prevUserBalance = await provider.connection.getBalance(
+      teamMember1.publicKey
+    );
+    const prevProtocolVaultBalance = await provider.connection.getBalance(
+      protocolVault
+    );
+
     const lutAccount = (
       await provider.connection.getAddressLookupTable(teamLut)
     ).value;
@@ -453,6 +460,8 @@ describe("codecracy", () => {
         project,
         user: teamMember1.publicKey,
         systemProgram: web3.SystemProgram.programId,
+        config,
+        protocolVault,
       })
       .remainingAccounts(remaining_accounts)
       .instruction();
@@ -473,6 +482,22 @@ describe("codecracy", () => {
 
     const memberData = await program.account.member.fetch(member1);
     assert.isTrue(memberData.fundsClaimed);
+
+    const userBalance = await provider.connection.getBalance(
+      teamMember1.publicKey
+    );
+    const protocolVaultBalance = await provider.connection.getBalance(
+      protocolVault
+    );
+
+    assert.isTrue(
+      userBalance > prevUserBalance,
+      "User balance should increase"
+    );
+    assert.isTrue(
+      protocolVaultBalance > prevProtocolVaultBalance,
+      "Protocol vault balance should increase"
+    );
   });
 
   it("Admin change", async () => {

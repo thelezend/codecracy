@@ -19,4 +19,4 @@ pub const ADDRESS_LOOK_UP_TABLE_PROGRAM: &str = "AddressLookupTab1e1111111111111
 pub const MAX_PROJECT_NAME_LENGTH: u8 = 32;
 pub const MAX_GITHUB_HANDLE_LENGTH: u8 = 32;
 
-pub const FEE_BASIS_POINTS: u16 = 2000;
+pub const FEE_BASIS_POINTS: u16 = 200;
