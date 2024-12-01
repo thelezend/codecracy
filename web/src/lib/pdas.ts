@@ -6,6 +6,8 @@ const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
 const MEMBER_SEED = "member";
 const POLL_SEED = "poll";
+const VOTE_SEED = "vote";
+const CONFIG_SEED = "config";
 
 export function deriveProjectPda(
   projectName: string,
@@ -51,8 +53,21 @@ export function derivePollPda(
   return PublicKey.findProgramAddressSync(seeds, programId)[0];
 }
 
+export function deriveConfigPda(programId: PublicKey) {
+  const seeds = [Buffer.from(CONFIG_SEED)];
+  return PublicKey.findProgramAddressSync(seeds, programId)[0];
+}
+
+export function deriveProtocolVaultPda(
+  config: PublicKey,
+  programId: PublicKey
+) {
+  const seeds = [Buffer.from(VAULT_SEED), config.toBuffer()];
+  return PublicKey.findProgramAddressSync(seeds, programId)[0];
+}
+
 export function deriveVotePda(poll: PublicKey, user: PublicKey) {
-  const seeds = [Buffer.from("vote"), poll.toBuffer(), user.toBuffer()];
+  const seeds = [Buffer.from(VOTE_SEED), poll.toBuffer(), user.toBuffer()];
   return PublicKey.findProgramAddressSync(seeds, CODECRACY_PROGRAM_ID)[0];
 }
 

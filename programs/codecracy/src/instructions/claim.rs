@@ -105,6 +105,12 @@ impl<'info> Claim<'info> {
         )?;
         self.transfer_to_protocol_vault(signer_seeds, protocol_fee)?;
 
+        // Check if remaining funds are less than minimum rent
+        let min_rent = Rent::get()?.minimum_balance(0);
+        if self.vault.lamports() < min_rent {
+            self.transfer_to_protocol_vault(signer_seeds, self.vault.lamports())?;
+        }
+
         self.member.funds_claimed = true;
 
         Ok(())

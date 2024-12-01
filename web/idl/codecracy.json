@@ -9,24 +9,13 @@
   "instructions": [
     {
       "name": "add_member",
-      "discriminator": [
-        13,
-        116,
-        123,
-        130,
-        126,
-        198,
-        57,
-        34
-      ],
+      "discriminator": [13, 116, 123, 130, 126, 198, 57, 34],
       "accounts": [
         {
           "name": "admin",
           "writable": true,
           "signer": true,
-          "relations": [
-            "project"
-          ]
+          "relations": ["project"]
         },
         {
           "name": "new_user"
@@ -41,14 +30,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  98,
-                  101,
-                  114
-                ]
+                "value": [109, 101, 109, 98, 101, 114]
               },
               {
                 "kind": "account",
@@ -82,16 +64,7 @@
     },
     {
       "name": "cast_vote",
-      "discriminator": [
-        20,
-        212,
-        15,
-        189,
-        69,
-        180,
-        69,
-        151
-      ],
+      "discriminator": [20, 212, 15, 189, 69, 180, 69, 151],
       "accounts": [
         {
           "name": "voter",
@@ -116,12 +89,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  111,
-                  116,
-                  101
-                ]
+                "value": [118, 111, 116, 101]
               },
               {
                 "kind": "account",
@@ -152,24 +120,13 @@
     },
     {
       "name": "change_admin",
-      "discriminator": [
-        193,
-        151,
-        203,
-        161,
-        200,
-        202,
-        32,
-        146
-      ],
+      "discriminator": [193, 151, 203, 161, 200, 202, 32, 146],
       "accounts": [
         {
           "name": "admin",
           "writable": true,
           "signer": true,
-          "relations": [
-            "project_config"
-          ]
+          "relations": ["project_config"]
         },
         {
           "name": "new_admin"
@@ -183,16 +140,7 @@
     },
     {
       "name": "claim",
-      "discriminator": [
-        62,
-        198,
-        214,
-        193,
-        213,
-        159,
-        108,
-        210
-      ],
+      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
       "accounts": [
         {
           "name": "user",
@@ -200,8 +148,7 @@
           "signer": true
         },
         {
-          "name": "project",
-          "writable": true
+          "name": "project"
         },
         {
           "name": "member",
@@ -210,14 +157,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  98,
-                  101,
-                  114
-                ]
+                "value": [109, 101, 109, 98, 101, 114]
               },
               {
                 "kind": "account",
@@ -237,17 +177,38 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
                 "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [99, 111, 110, 102, 105, 103]
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [118, 97, 117, 108, 116]
+              },
+              {
+                "kind": "account",
+                "path": "config"
               }
             ]
           }
@@ -261,24 +222,13 @@
     },
     {
       "name": "close_project",
-      "discriminator": [
-        117,
-        209,
-        53,
-        106,
-        93,
-        55,
-        112,
-        49
-      ],
+      "discriminator": [117, 209, 53, 106, 93, 55, 112, 49],
       "accounts": [
         {
           "name": "admin",
           "writable": true,
           "signer": true,
-          "relations": [
-            "project"
-          ]
+          "relations": ["project"]
         },
         {
           "name": "project",
@@ -290,13 +240,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -309,17 +253,89 @@
       "args": []
     },
     {
-      "name": "initialize_project",
-      "discriminator": [
-        69,
-        126,
-        215,
-        37,
-        20,
-        60,
-        73,
-        235
+      "name": "edit_config",
+      "discriminator": [244, 197, 215, 48, 246, 184, 210, 138],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": ["config"]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [99, 111, 110, 102, 105, 103]
+              }
+            ]
+          }
+        }
       ],
+      "args": [
+        {
+          "name": "new_admin",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "fee_basis_points",
+          "type": {
+            "option": "u16"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize_config",
+      "discriminator": [208, 127, 21, 1, 194, 190, 196, 70],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [99, 111, 110, 102, 105, 103]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [118, 97, 117, 108, 116]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_project",
+      "discriminator": [69, 126, 215, 37, 20, 60, 73, 235],
       "accounts": [
         {
           "name": "admin",
@@ -341,19 +357,7 @@
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  114,
-                  111,
-                  106,
-                  101,
-                  99,
-                  116,
-                  45,
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
+                  112, 114, 111, 106, 101, 99, 116, 45, 99, 111, 110, 102, 105,
                   103
                 ]
               },
@@ -378,13 +382,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -402,9 +400,7 @@
         },
         {
           "name": "system_program",
-          "docs": [
-            "Required system program"
-          ],
+          "docs": ["Required system program"],
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -425,24 +421,13 @@
     },
     {
       "name": "remove_member",
-      "discriminator": [
-        171,
-        57,
-        231,
-        150,
-        167,
-        128,
-        18,
-        55
-      ],
+      "discriminator": [171, 57, 231, 150, 167, 128, 18, 55],
       "accounts": [
         {
           "name": "admin",
           "writable": true,
           "signer": true,
-          "relations": [
-            "project"
-          ]
+          "relations": ["project"]
         },
         {
           "name": "member_pubkey"
@@ -457,14 +442,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  98,
-                  101,
-                  114
-                ]
+                "value": [109, 101, 109, 98, 101, 114]
               },
               {
                 "kind": "account",
@@ -482,16 +460,7 @@
     },
     {
       "name": "start_poll",
-      "discriminator": [
-        59,
-        188,
-        204,
-        28,
-        129,
-        88,
-        202,
-        242
-      ],
+      "discriminator": [59, 188, 204, 28, 129, 88, 202, 242],
       "accounts": [
         {
           "name": "user",
@@ -507,14 +476,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  98,
-                  101,
-                  114
-                ]
+                "value": [109, 101, 109, 98, 101, 114]
               },
               {
                 "kind": "account",
@@ -534,12 +496,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  112,
-                  111,
-                  108,
-                  108
-                ]
+                "value": [112, 111, 108, 108]
               },
               {
                 "kind": "arg",
@@ -571,56 +528,24 @@
   ],
   "accounts": [
     {
+      "name": "Config",
+      "discriminator": [155, 12, 170, 224, 30, 250, 204, 130]
+    },
+    {
       "name": "Member",
-      "discriminator": [
-        54,
-        19,
-        162,
-        21,
-        29,
-        166,
-        17,
-        198
-      ]
+      "discriminator": [54, 19, 162, 21, 29, 166, 17, 198]
     },
     {
       "name": "Poll",
-      "discriminator": [
-        110,
-        234,
-        167,
-        188,
-        231,
-        136,
-        153,
-        111
-      ]
+      "discriminator": [110, 234, 167, 188, 231, 136, 153, 111]
     },
     {
       "name": "Project",
-      "discriminator": [
-        205,
-        168,
-        189,
-        202,
-        181,
-        247,
-        142,
-        19
-      ]
+      "discriminator": [205, 168, 189, 202, 181, 247, 142, 19]
     },
     {
       "name": "Vote",
-      "discriminator": [
-        96,
-        91,
-        104,
-        57,
-        145,
-        35,
-        172,
-        155
-      ]
+      "discriminator": [96, 91, 104, 57, 145, 35, 172, 155]
     }
   ],
   "errors": [
@@ -636,6 +561,34 @@
     }
   ],
   "types": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_basis_points",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "Member",
       "type": {
@@ -715,23 +668,17 @@
         "fields": [
           {
             "name": "admin",
-            "docs": [
-              "The public key of the project creator/admin"
-            ],
+            "docs": ["The public key of the project creator/admin"],
             "type": "pubkey"
           },
           {
             "name": "is_active",
-            "docs": [
-              "Is the project active"
-            ],
+            "docs": ["Is the project active"],
             "type": "bool"
           },
           {
             "name": "team_lut",
-            "docs": [
-              "Lookup table for team members"
-            ],
+            "docs": ["Lookup table for team members"],
             "type": "pubkey"
           },
           {
@@ -740,9 +687,7 @@
           },
           {
             "name": "bump",
-            "docs": [
-              "PDA bump seed for account derivation"
-            ],
+            "docs": ["PDA bump seed for account derivation"],
             "type": "u8"
           },
           {
@@ -751,9 +696,7 @@
           },
           {
             "name": "project_name",
-            "docs": [
-              "Project name, limited by MAX_PROJECT_NAME_LENGTH"
-            ],
+            "docs": ["Project name, limited by MAX_PROJECT_NAME_LENGTH"],
             "type": "string"
           },
           {
@@ -817,6 +760,11 @@
     }
   ],
   "constants": [
+    {
+      "name": "CONFIG_SEED",
+      "type": "string",
+      "value": "\"config\""
+    },
     {
       "name": "MEMBER_SEED",
       "type": "string",

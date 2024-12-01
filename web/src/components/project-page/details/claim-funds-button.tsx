@@ -135,9 +135,10 @@ export function ClaimFundsButton({ projectAddress }: ClaimFundsButtonProps) {
           <DialogDescription>
             You are eligible to claim{" "}
             <span className="text-primary font-mono font-bold">
-              {(userClaimableFunds / LAMPORTS_PER_SOL).toFixed(2)} SOL
+              {((userClaimableFunds * 0.98) / LAMPORTS_PER_SOL).toFixed(2)} SOL
             </span>{" "}
-            based on your contribution score. Would you like to proceed?
+            (after 2% protocol fee) based on your contribution score. Would you
+            like to proceed?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

@@ -4,7 +4,7 @@ import {
   useCodecracyProgram,
   VoteTypes,
 } from "@/components/codecracy/data-access";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -191,10 +191,15 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
   const isExpired = closeDate.getTime() < Date.now();
   const { publicKey: userWallet } = useWallet();
 
-  const { useCastVote } = useCodecracyProgram();
+  const { useCastVote, useGetVote } = useCodecracyProgram();
   const { mutate: castVote, isPending: isVoting } = useCastVote(
-    poll.account.project
+    poll.account.project,
+    poll.publicKey
   );
+  const { isLoading: isVoteLoading, isError: isVoteError } = useGetVote(
+    poll.publicKey
+  );
+
   const [selectedVoteType, setSelectedVoteType] = useState<
     keyof typeof VoteTypes | null
   >(null);
@@ -202,7 +207,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
 
   if (!userWallet) return null;
   const isCreator = poll.account.user.equals(userWallet);
-  const canVote = !isExpired && !isCreator;
+  const canVote = !isExpired && !isCreator && isVoteError && !isVoteLoading;
 
   const handleVote = async (voteType: keyof typeof VoteTypes) => {
     try {
@@ -246,7 +251,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
                   {poll.account.votes}
                 </span>
               </div>
-              <Button
+              <AnimatedButton
                 onClick={() => setShowVoteDialog(true)}
                 disabled={!canVote || isVoting}
                 className="relative group/vote"
@@ -266,10 +271,24 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
                       ⚡
                     </motion.div>
                   </div>
+                ) : !isExpired && !isCreator && isVoteLoading ? (
+                  <div className="flex items-center gap-2">
+                    <span>Loading</span>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      ⚡
+                    </motion.div>
+                  </div>
                 ) : (
                   "Vote"
                 )}
-              </Button>
+              </AnimatedButton>
             </div>
           </div>
 
@@ -311,7 +330,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
               { type: "High", label: "High Impact" },
               { type: "Reject", label: "Reject", fullWidth: true },
             ].map(({ type, label, fullWidth }) => (
-              <Button
+              <AnimatedButton
                 key={type}
                 onClick={() => handleVote(type as keyof typeof VoteTypes)}
                 variant={selectedVoteType === type ? "default" : "outline"}
@@ -321,7 +340,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll, member, project }) => {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 opacity-0 group-hover/vote-type:opacity-100 transition-opacity rounded-md" />
                 <span>{label}</span>
-              </Button>
+              </AnimatedButton>
             ))}
           </div>
         </DialogContent>
