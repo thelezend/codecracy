@@ -3,6 +3,7 @@ import { Program, web3 } from "@coral-xyz/anchor";
 import { assert } from "chai";
 import { Codecracy } from "../target/types/codecracy";
 
+const CONFIG_SEED = "config";
 const PROJECT_CONFIG_SEED = "project-config";
 const VAULT_SEED = "vault";
 
@@ -20,6 +21,17 @@ describe("codecracy", () => {
 
   const projectName = "codeCracy";
   const githubHandle = "turbin3";
+
+  let [config, configBump] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(CONFIG_SEED)],
+    program.programId
+  );
+
+  let [protocolVault, protocolVaultBump] =
+    web3.PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), config.toBuffer()],
+      program.programId
+    );
 
   let [project, projectBump] = web3.PublicKey.findProgramAddressSync(
     [
@@ -48,6 +60,47 @@ describe("codecracy", () => {
     [Buffer.from("member"), project.toBuffer(), hacker.publicKey.toBuffer()],
     program.programId
   );
+
+  it("Config Initialization", async () => {
+    await program.methods
+      .initializeConfig()
+      .accountsStrict({
+        admin: admin.publicKey,
+        config,
+        vault: protocolVault,
+        systemProgram: web3.SystemProgram.programId,
+      })
+      .rpc();
+  });
+
+  it("Edit config", async () => {
+    await program.methods
+      .editConfig(null, 4000)
+      .accountsStrict({
+        admin: admin.publicKey,
+        config,
+      })
+      .rpc();
+  });
+
+  it("Fail on invalid config edit", async () => {
+    await airdropSol(provider.connection, hacker.publicKey);
+
+    try {
+      await program.methods
+        .editConfig(null, 4001)
+        .accountsStrict({
+          admin: hacker.publicKey,
+          config,
+        })
+        .signers([hacker])
+        .rpc();
+      assert.fail();
+    } catch (_err) {
+      const err = anchor.AnchorError.parse(_err.logs);
+      assert.strictEqual(err.error.errorCode.code, "ConstraintHasOne");
+    }
+  });
 
   it("Project intialization", async () => {
     let recent_slot = new anchor.BN(await provider.connection.getSlot());
